@@ -11,7 +11,7 @@ on:
         type: boolean
         default: false
       create_github_release:
-        description: "Create a GitHub Release for VERSION_NAME"
+        description: "Create a GitHub Release for VERSION_NAME (only after prior steps succeed)"
         type: boolean
         default: true
       debug_publish:
@@ -104,8 +104,14 @@ jobs:
           grep -E 'VERSION_NAME|GROUP' gradle.properties || true
           echo "--- Publishing tasks ---"
           ./gradlew tasks --group=publishing --all
-          echo "--- nmcp / central tasks ---"
-          ./gradlew tasks --all 2>/dev/null | grep -iE 'nmcp|central|zipAggregation|publishAggregation' || true
+          echo "--- nmcp / publishAggregation / central tasks ---"
+          ./gradlew tasks --all | grep -iE "nmcp|publishAggregation|central"
+          echo "--- Assert publishAggregationToCentralPortal exists ---"
+          if ! ./gradlew tasks --all | grep -qE '^publishAggregationToCentralPortal(\s|$)'; then
+            echo "✗ publishAggregationToCentralPortal not found"
+            exit 1
+          fi
+          echo "✓ publishAggregationToCentralPortal is registered"
           echo "--- Publication info ---"
           ./gradlew printPublishingInfo
           echo "--- Repository / Portal URLs ---"
@@ -121,9 +127,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "==> Stage 5: Sign + local publish"
-          if [[ "${{ github.event_name == 'workflow_dispatch' && inputs.publish_central }}" == "true" ]]; then
-            ./gradlew requireCentralSecrets --stacktrace
-          fi
+          # Local signing only — never require Central Portal credentials here.
           ./gradlew publishToMavenLocal publishToLocalTestRepository --stacktrace
           echo "✓ Signing successful (when SIGNING_KEY present) / local publish complete"
           echo "Local test repo: build/local-maven-repo"
@@ -149,6 +153,23 @@ jobs:
           echo "==> Fail-fast secret check"
           ./gradlew requireCentralSecrets --stacktrace
 
+          # central-portal.sh (wait / publish) requires Portal token env vars.
+          for var in CENTRAL_PORTAL_USERNAME CENTRAL_PORTAL_PASSWORD; do
+            if [[ -z "${!var:-}" ]]; then
+              echo "✗ Missing env for scripts/central-portal.sh: ${var}"
+              exit 1
+            fi
+          done
+          echo "✓ Portal env present for scripts/central-portal.sh"
+
+          echo "==> Confirm nmcp publish task"
+          if ! ./gradlew tasks --all | grep -qE '^publishAggregationToCentralPortal(\s|$)'; then
+            echo "✗ publishAggregationToCentralPortal not found — listing nmcp/central tasks:"
+            ./gradlew tasks --all | grep -iE "nmcp|publishAggregation|central" || true
+            exit 1
+          fi
+          echo "✓ Using task: publishAggregationToCentralPortal"
+
           echo "==> Stage 6: Generate + upload deployment bundle"
           ./gradlew nmcpZipAggregation --stacktrace
           BUNDLE_PATH="build/nmcp/zip/aggregation.zip"
@@ -163,6 +184,7 @@ jobs:
           echo "Publishing type: ${CENTRAL_PUBLISHING_TYPE}"
           # USER_MANAGED: upload → VALIDATED (then Stages 8–10 below).
           # AUTOMATIC: nmcp continues through publish.
+          # Env CENTRAL_PORTAL_* / CENTRAL_PUBLISHING_TYPE / SIGNING_* inherited by Gradle.
           ./gradlew publishAggregationToCentralPortal --stacktrace --info | tee /tmp/skone-central.log
           echo "✓ Upload complete"
 
@@ -207,19 +229,36 @@ jobs:
 
       # -------------------- Stage 11: Verify artifact --------------------
       - name: "Stage 11 — Verify artifact on Maven Central"
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_central }}
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_central }}
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
         run: |
           set -euo pipefail
           echo "==> Stage 11: Verify"
+          # verify-maven is public HTTP; Portal env kept for consistent script tooling.
+          for var in CENTRAL_PORTAL_USERNAME CENTRAL_PORTAL_PASSWORD; do
+            if [[ -z "${!var:-}" ]]; then
+              echo "⚠ ${var} unset (verify-maven does not require auth, continuing)"
+            fi
+          done
           ./scripts/central-portal.sh verify-maven "${{ steps.version.outputs.version }}" skone-bom
           echo "Portal: https://central.sonatype.com/"
           echo "Repo:   https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/"
 
+      # Only after prior steps succeed. When publish_central=true, Central (Stages 6–10) must have succeeded.
       - name: Create GitHub Release
-        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.create_github_release) || startsWith(github.ref, 'refs/tags/v') }}
+        if: >-
+          ${{
+            success() && (
+              (
+                github.event_name == 'workflow_dispatch' &&
+                inputs.create_github_release &&
+                (inputs.publish_central != true || steps.central.outcome == 'success')
+              ) ||
+              startsWith(github.ref, 'refs/tags/v')
+            )
+          }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}

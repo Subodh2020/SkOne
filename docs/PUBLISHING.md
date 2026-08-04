@@ -116,8 +116,8 @@ Workflow: [`.github/workflows/publish.yml`](../.github/workflows/publish.yml)
 2. **Tests** — `check`
 3. **Verify publishing** — `verifyPublishing` + `printPublishingInfo`
 4. **Dokka** — `dokkaHtmlAll`
-5. **Sign** — `publishToMavenLocal` + `publishToLocalTestRepository` (requires signing secrets for Central)
-6. **Upload bundle** — `nmcpZipAggregation` then `publishAggregationToCentralPortal` (prints bundle path)
+5. **Sign** — `publishToMavenLocal` + `publishToLocalTestRepository` (signing secrets only; no Portal credentials)
+6. **Upload bundle** — fail-fast on all four secrets, then `nmcpZipAggregation` + `publishAggregationToCentralPortal` (prints bundle path)
 7. **Deployment ID** — parsed from nmcp logs
 8. **Wait VALIDATED** — poll every 10s, max 15 minutes (`USER_MANAGED`)
 9. **Publish deployment** — Portal API `POST …/deployment/{id}`
@@ -126,7 +126,7 @@ Workflow: [`.github/workflows/publish.yml`](../.github/workflows/publish.yml)
 
 `AUTOMATIC` skips stages 8–9 script calls; nmcp performs validate + publish itself.
 
-Fail-fast: missing any of `SIGNING_KEY`, `SIGNING_PASSWORD`, `CENTRAL_PORTAL_USERNAME`, `CENTRAL_PORTAL_PASSWORD` aborts before upload (`requireCentralSecrets`).
+Fail-fast: Stage 6 (`requireCentralSecrets`) aborts before upload if any of `SIGNING_KEY`, `SIGNING_PASSWORD`, `CENTRAL_PORTAL_USERNAME`, or `CENTRAL_PORTAL_PASSWORD` is missing. Stage 5 never checks Portal credentials.
 
 ## How Maven Central deployment works
 
