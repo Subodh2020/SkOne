@@ -14,3 +14,4 @@
 | [0010](0010-form-framework.md) | Form Framework |
 | [0011](0011-sktextfield-flagship-input.md) | SKTextField Flagship Input |
 | [0012](0012-developer-experience-playground.md) | Developer Experience Playground |
+| [0013](0013-maven-central-publishing.md) | Maven Central Publishing Infrastructure |

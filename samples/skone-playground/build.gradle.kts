@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "io.skone.playground"
         versionCode = 1
-        versionName = "1.3.1"
+        versionName = "1.3.2"
     }
 
     buildTypes {

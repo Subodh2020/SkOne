@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.skone.android.library)
-    alias(libs.plugins.skone.publishing)
+    alias(libs.plugins.skone.publish)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.paparazzi)
 }

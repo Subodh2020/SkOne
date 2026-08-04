@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "io.skone.buildlogic"
+group = "com.thesubodhgupta.skone.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -14,6 +14,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.detekt.gradlePlugin)
     compileOnly(libs.ktlint.gradlePlugin)
+    compileOnly(libs.dokka.gradlePlugin)
 }
 
 gradlePlugin {
@@ -26,6 +27,11 @@ gradlePlugin {
             id = "skone.android.application"
             implementationClass = "io.skone.buildlogic.AndroidApplicationConventionPlugin"
         }
+        register("skonePublish") {
+            id = "skone.publish"
+            implementationClass = "io.skone.buildlogic.PublishingConventionPlugin"
+        }
+        // Backward-compatible alias
         register("skonePublishing") {
             id = "skone.publishing"
             implementationClass = "io.skone.buildlogic.PublishingConventionPlugin"

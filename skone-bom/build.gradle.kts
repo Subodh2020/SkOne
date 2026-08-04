@@ -1,10 +1,7 @@
 plugins {
     `java-platform`
-    `maven-publish`
+    alias(libs.plugins.skone.publish)
 }
-
-group = "io.skone"
-version = "1.3.1-SNAPSHOT"
 
 javaPlatform {
     allowDependencies()
@@ -12,7 +9,6 @@ javaPlatform {
 
 dependencies {
     constraints {
-        // Foundation + Design System artifacts
         api(project(":skone-common"))
         api(project(":skone-plugin"))
         api(project(":skone-theme"))
@@ -22,42 +18,17 @@ dependencies {
         api(project(":skone-ui"))
         api(project(":skone-forms"))
 
-        // Reserved future coordinates (documented; modules created in later phases):
-        // io.skone:skone-navigation
-        // io.skone:skone-feedback
-        // io.skone:skone-validation
-        // io.skone:skone-animation
-        // io.skone:skone-ai-core
-        // io.skone:skone-ai-ui
-        // io.skone:skone-ai-chat
-        // io.skone:skone-ai-voice
-        // io.skone:skone-ai-image
-        // io.skone:skone-camera
-        // io.skone:skone-location
-        // io.skone:skone-map
-        // io.skone:skone-network
-        // io.skone:skone-socket
-        // io.skone:skone-auth
-        // io.skone:skone-storage
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("bom") {
-            from(components["javaPlatform"])
-            artifactId = "skone-bom"
-            pom {
-                name.set("skone-bom")
-                description.set("SKOne Bill of Materials")
-                url.set("https://github.com/skone-io/skone")
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-            }
-        }
+        // Future modules automatically join the BOM when created + constrained here:
+        // api(project(":skone-navigation"))
+        // api(project(":skone-feedback"))
+        // api(project(":skone-animation"))
+        // api(project(":skone-ai-core"))
+        // api(project(":skone-ai-ui"))
+        // api(project(":skone-camera"))
+        // api(project(":skone-map"))
+        // api(project(":skone-location"))
+        // api(project(":skone-network"))
+        // api(project(":skone-auth"))
+        // api(project(":skone-storage"))
     }
 }

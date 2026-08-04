@@ -13,26 +13,19 @@ Coordinates and versioning must remain stable and predictable.
 
 | Item | Value |
 |------|-------|
-| Group ID | `io.skone` |
+| Group ID | `com.thesubodhgupta.skone` (verified Maven Central namespace) |
 | Package root | `io.skone.*` |
-| Versioning | Semantic Versioning 2.0.0 |
-| Alignment | `io.skone:skone-bom` |
+| Versioning | Semantic Versioning 2.0.0 (+ optional `-alpha`/`-beta`/`-rc`/`-SNAPSHOT`) |
+| Alignment | `com.thesubodhgupta.skone:skone-bom` |
+| Source of truth | `GROUP` / `VERSION_NAME` in `gradle.properties` |
+| Convention | `skone.publish` |
 
 Artifact IDs match module names (`skone-core`, `skone-common`, …).
 
-Reserved artifact IDs (created in later phases):
-
-`skone-compose`, `skone-xml`, `skone-ui`, `skone-forms`, `skone-navigation`,
-`skone-feedback`, `skone-validation`, `skone-animation`, `skone-ai-core`,
-`skone-ai-ui`, `skone-ai-chat`, `skone-ai-voice`, `skone-ai-image`,
-`skone-camera`, `skone-location`, `skone-map`, `skone-network`, `skone-socket`,
-`skone-auth`, `skone-storage`.
-
-License placeholder for publish skeleton: Apache License 2.0.
+See [ADR 0013](0013-maven-central-publishing.md) and [PUBLISHING.md](../PUBLISHING.md).
 
 ## Consequences
 
 - Consumers pin one BOM version for aligned libraries.
-- Individual modules may gain independent versioning later; BOM remains the
-  recommended entry point.
-- Renaming artifacts after first public release is a breaking change and avoided.
+- Renaming Maven group after first public Central release is a breaking change.
+- Kotlin packages stay on `io.skone.*` for API stability.

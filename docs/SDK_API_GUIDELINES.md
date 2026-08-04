@@ -11,7 +11,7 @@ long-term binary compatibility, consistency, and developer experience.
 | Brand        | SKOne      | —                                 |
 | Package root | `io.skone` | `io.skone.core`                   |
 | Class prefix | `SK`       | `SKButton`, `SKTheme`, `SKResult` |
-| Maven group  | `io.skone` | `io.skone:skone-core`             |
+| Maven group  | `com.thesubodhgupta.skone` | `com.thesubodhgupta.skone:skone-core` |
 
 Never use ad-hoc names such as `CustomButton`, `MyButton`, or `AwesomeButton`.
 
