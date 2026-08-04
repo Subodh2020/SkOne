@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.skone"
-version = "1.1.0-SNAPSHOT"
+version = "1.3.1-SNAPSHOT"
 
 javaPlatform {
     allowDependencies()
@@ -19,10 +19,10 @@ dependencies {
         api(project(":skone-core"))
         api(project(":skone-compose"))
         api(project(":skone-xml"))
+        api(project(":skone-ui"))
+        api(project(":skone-forms"))
 
         // Reserved future coordinates (documented; modules created in later phases):
-        // io.skone:skone-ui
-        // io.skone:skone-forms
         // io.skone:skone-navigation
         // io.skone:skone-feedback
         // io.skone:skone-validation

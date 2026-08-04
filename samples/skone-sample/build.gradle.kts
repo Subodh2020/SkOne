@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "io.skone.sample"
         versionCode = 1
-        versionName = "1.1.0"
+        versionName = "1.3.1"
     }
 
     buildTypes {
@@ -30,6 +30,8 @@ android {
 dependencies {
     implementation(project(":skone-core"))
     implementation(project(":skone-compose"))
+    implementation(project(":skone-ui"))
+    implementation(project(":skone-forms"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

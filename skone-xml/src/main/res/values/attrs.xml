@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SKTextView">
+        <attr name="skText" format="string|reference" />
+        <attr name="skMaxLines" format="integer" />
+        <attr name="skSoftWrap" format="boolean" />
+        <attr name="skOverflow" format="enum">
+            <enum name="clip" value="0" />
+            <enum name="ellipsis" value="1" />
+            <enum name="visible" value="2" />
+        </attr>
+        <attr name="skTextAlign" format="enum">
+            <enum name="start" value="0" />
+            <enum name="center" value="1" />
+            <enum name="end" value="2" />
+            <enum name="justify" value="3" />
+        </attr>
+        <attr name="skTypographyRole" format="enum">
+            <enum name="displayLarge" value="0" />
+            <enum name="displayMedium" value="1" />
+            <enum name="displaySmall" value="2" />
+            <enum name="headlineLarge" value="3" />
+            <enum name="headlineMedium" value="4" />
+            <enum name="headlineSmall" value="5" />
+            <enum name="titleLarge" value="6" />
+            <enum name="titleMedium" value="7" />
+            <enum name="titleSmall" value="8" />
+            <enum name="bodyLarge" value="9" />
+            <enum name="bodyMedium" value="10" />
+            <enum name="bodySmall" value="11" />
+            <enum name="labelLarge" value="12" />
+            <enum name="labelMedium" value="13" />
+            <enum name="labelSmall" value="14" />
+        </attr>
+        <attr name="skContentColorRole" format="enum">
+            <enum name="primary" value="0" />
+            <enum name="onPrimary" value="1" />
+            <enum name="secondary" value="2" />
+            <enum name="onSecondary" value="3" />
+            <enum name="error" value="4" />
+            <enum name="onError" value="5" />
+            <enum name="background" value="6" />
+            <enum name="onBackground" value="7" />
+            <enum name="surface" value="8" />
+            <enum name="onSurface" value="9" />
+            <enum name="onSurfaceVariant" value="10" />
+        </attr>
+        <attr name="skContentDescription" format="string|reference" />
+        <attr name="skComponentId" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="SKTextFieldView">
+        <attr name="skFieldId" format="string" />
+        <attr name="skLabel" format="string|reference" />
+        <attr name="skHint" format="string|reference" />
+        <attr name="skSupportingText" format="string|reference" />
+        <attr name="skValue" format="string|reference" />
+        <attr name="skRequired" format="boolean" />
+        <attr name="skReadOnly" format="boolean" />
+        <attr name="skSingleLine" format="boolean" />
+        <attr name="skMaxLines" />
+        <attr name="skContentDescription" />
+        <attr name="skImeAction" format="enum">
+            <enum name="defaultAction" value="0" />
+            <enum name="done" value="1" />
+            <enum name="go" value="2" />
+            <enum name="next" value="3" />
+            <enum name="previous" value="4" />
+            <enum name="search" value="5" />
+            <enum name="send" value="6" />
+            <enum name="none" value="7" />
+        </attr>
+        <attr name="skKeyboardType" format="enum">
+            <enum name="text" value="0" />
+            <enum name="ascii" value="1" />
+            <enum name="number" value="2" />
+            <enum name="phone" value="3" />
+            <enum name="email" value="4" />
+            <enum name="password" value="5" />
+            <enum name="uri" value="6" />
+        </attr>
+    </declare-styleable>
+</resources>

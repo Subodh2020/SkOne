@@ -2,70 +2,56 @@
 
 **SKOne** is an open-source, enterprise-grade Android developer platform — modular, Kotlin-first, AI-ready, with Jetpack Compose and XML support.
 
-Current release line: **1.1.0 (Design System)** — theme engine, tokens, and component contracts. **No production widgets yet.**
+Current release line: **1.3.1** — Developer Experience playground (no new production widgets).
 
 ## Modules
 
 | Artifact | Description |
 |----------|-------------|
 | `skone-bom` | Bill of Materials |
-| `skone-common` | `SKResult`, `SKError`, logging SPI, annotations |
-| `skone-plugin` | Plugin SPI and registry |
-| `skone-theme` | Design tokens, size/shape/state systems, theme engine |
-| `skone-core` | `SKOne` init, AI SPI, component contracts **and framework** |
-| `skone-compose` | Compose theme bridge + component lifecycle helpers — **no widgets** |
-| `skone-xml` | XML theme bridge + `SKXmlComponent` base — **no widgets** |
-| `samples:skone-sample` | Design-system showcase |
+| `skone-common` | Results, errors, logging |
+| `skone-plugin` | Plugin SPI |
+| `skone-theme` | Design tokens + theme engine |
+| `skone-core` | Init, AI SPI, component framework |
+| `skone-ui` | Shared widget contracts (`SKText`, `SKTextField`) |
+| `skone-forms` | Form controller, validation, formatters, masks, focus |
+| `skone-compose` | Compose bridges + widgets |
+| `skone-xml` | XML bridges + widgets |
+| `samples:skone-sample` | Minimal integration sample |
+| `samples:skone-playground` | **Official showcase** — catalog, gallery, editors, codegen |
 
-## Quick start
+## Developer playground (1.3.1)
 
-```kotlin
-class App : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        SKOne.initialize(SKOneConfig(plugins = listOf(/* … */)))
-    }
-}
-
-// Compose
-SKTheme(mode = SKThemeMode.System) {
-    val primary = skTheme.tokens.colors.primary.toColor()
-}
-
-// XML / Views
-SKThemeHelper.install(context, mode = SKThemeMode.System)
-val theme = SKThemeHelper.require()
+```bash
+./gradlew :samples:skone-playground:installDebug
 ```
 
-Local modules:
+- Component catalog + search
+- Widget gallery
+- Live property editor
+- Generated Compose / XML
+- Theme switcher (Light / Dark / System)
+- In-app docs + sample browser
+- Static docs site: [`docs-site/`](docs-site/)
 
-```kotlin
-implementation(platform(project(":skone-bom")))
-implementation(project(":skone-core"))
-implementation(project(":skone-compose")) // or skone-xml
-```
+See [Playground Guide](docs/PLAYGROUND.md) and [ADR 0012](docs/adr/0012-developer-experience-playground.md).
 
 ## Documentation
 
 - [SDK API Guidelines](docs/SDK_API_GUIDELINES.md)
 - [Design System](docs/DESIGN_SYSTEM.md)
 - [Component Framework](docs/COMPONENT_FRAMEWORK.md)
-- [Architecture diagrams](docs/architecture/DESIGN_SYSTEM_ARCHITECTURE.md)
-- [Architecture Decision Records](docs/adr/)
+- [Form Framework](docs/FORM_FRAMEWORK.md)
+- [SKText](docs/WIDGETS_SKTEXT.md) · [SKTextField](docs/WIDGETS_SKTEXTFIELD.md)
+- [Docs site](docs-site/index.html)
+- [ADRs](docs/adr/)
 
 ## Build
 
 ```bash
 ./gradlew check
-./gradlew :samples:skone-sample:assembleDebug
-./gradlew publishToMavenLocal
+./gradlew :samples:skone-playground:assembleDebug
 ```
-
-## Requirements
-
-- Android API 24+
-- JDK 17
-- Kotlin 2.0+
 
 ## License
 

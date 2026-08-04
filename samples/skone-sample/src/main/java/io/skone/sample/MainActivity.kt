@@ -6,149 +6,185 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import io.skone.SKOne
+import io.skone.component.accessibility.SKAccessibilityConfig
+import io.skone.component.appearance.SKAppearanceConfig
+import io.skone.compose.component.ProvideSKComponentRuntime
+import io.skone.compose.component.rememberSKComponentRuntime
+import io.skone.compose.forms.ProvideSKFormController
 import io.skone.compose.theme.SKTheme
-import io.skone.compose.theme.resolve
 import io.skone.compose.theme.skTheme
 import io.skone.compose.theme.toColor
-import io.skone.compose.theme.toSp
-import io.skone.component.appearance.SKAppearanceConfig
+import io.skone.compose.theme.toDp
+import io.skone.compose.widget.SKText
+import io.skone.compose.widget.SKTextField
+import io.skone.forms.SKFormController
+import io.skone.forms.formatter.SKTrimFormatter
+import io.skone.forms.mask.SKInputMasks
+import io.skone.forms.validation.SKEmailRule
+import io.skone.forms.validation.SKRequiredRule
 import io.skone.theme.SKThemeMode
+import io.skone.theme.tokens.SKColorRole
 import io.skone.theme.tokens.SKTypographyRole
-import io.skone.theme.tokens.scale
+import io.skone.ui.field.SKImeAction
+import io.skone.ui.field.SKKeyboardType
 
+/**
+ * Minimal integration sample for SKTextField + SKFormController.
+ *
+ * The official developer showcase is [samples:skone-playground].
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SKTheme(mode = SKThemeMode.System) {
-                DesignSystemShowcase(
-                    initialized = SKOne.isInitialized(),
-                    pluginCount = if (SKOne.isInitialized()) SKOne.plugins().all().size else 0,
-                )
+                val runtime = rememberSKComponentRuntime()
+                ProvideSKComponentRuntime(runtime) {
+                    TextFieldFormShowcase()
+                }
             }
         }
     }
 }
 
 @Composable
-fun DesignSystemShowcase(
-    initialized: Boolean,
-    pluginCount: Int,
-    modifier: Modifier = Modifier,
-) {
-    val theme = skTheme
-    val colors = theme.tokens.colors
-    val body = theme.tokens.typography.scale(SKTypographyRole.BodyLarge)
-    val title = theme.tokens.typography.scale(SKTypographyRole.HeadlineSmall)
-    val primarySwatch = SKAppearanceConfig.Primary.resolve()
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(colors.background.toColor())
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            text = "SKOne Design System",
-            color = colors.onBackground.toColor(),
-            fontSize = title.size.toSp(),
-            lineHeight = title.lineHeight.toSp(),
-        )
-        Text(
-            text = if (initialized) {
-                "SDK initialized · $pluginCount plugin(s) · theme=${theme.name}"
-            } else {
-                "SDK not initialized"
-            },
-            color = colors.onSurfaceVariant.toColor(),
-            fontSize = body.size.toSp(),
-            lineHeight = body.lineHeight.toSp(),
-        )
-
-        Text(
-            text = "Token swatches (not widgets)",
-            color = colors.onBackground.toColor(),
-            fontSize = theme.tokens.typography.titleMedium.size.toSp(),
-        )
-
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            TokenSwatch(label = "Primary", color = colors.primary.toColor())
-            TokenSwatch(label = "Secondary", color = colors.secondary.toColor())
-            TokenSwatch(label = "Error", color = colors.error.toColor())
-            TokenSwatch(label = "Surface", color = colors.surfaceVariant.toColor())
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(primarySwatch.height)
-                .clip(primarySwatch.shape)
-                .background(primarySwatch.containerColor)
-                .padding(
-                    horizontal = primarySwatch.horizontalPadding,
-                    vertical = primarySwatch.verticalPadding,
-                ),
-            contentAlignment = Alignment.CenterStart,
-        ) {
-            Text(
-                text = "Resolved SKAppearanceConfig.Primary",
-                color = primarySwatch.contentColor,
-            )
-        }
-
-        Text(
-            text = "Spacing md=${theme.tokens.spacing.md.value}dp · " +
-                "Radius md=${theme.tokens.radius.md.value}dp · " +
-                "Min touch=${theme.sizes.minTouchTarget.value}dp",
-            color = colors.onSurfaceVariant.toColor(),
-            fontSize = theme.tokens.typography.bodySmall.size.toSp(),
-        )
+fun TextFieldFormShowcase(modifier: Modifier = Modifier) {
+    val controller = remember { SKFormController.create() }
+    DisposableEffect(controller) {
+        onDispose { controller.dispose() }
     }
-}
 
-@Composable
-private fun TokenSwatch(label: String, color: Color) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(color),
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = label,
-            color = skTheme.tokens.colors.onBackground.toColor(),
-            fontSize = skTheme.tokens.typography.labelSmall.size.toSp(),
-        )
+    var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    val formState by controller.state.collectAsState()
+    val errors by controller.errors.errors.collectAsState()
+    val theme = skTheme
+    val spacing = theme.tokens.spacing
+
+    ProvideSKFormController(controller) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(theme.tokens.colors.background.toColor())
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = spacing.md.toDp(), vertical = spacing.lg.toDp()),
+            verticalArrangement = Arrangement.spacedBy(spacing.md.toDp()),
+        ) {
+            SKText(
+                text = "SKTextField + Form",
+                appearance = SKAppearanceConfig.Text.copy(
+                    typographyRole = SKTypographyRole.HeadlineSmall,
+                    contentColorRole = SKColorRole.OnBackground,
+                ),
+                accessibility = SKAccessibilityConfig(
+                    contentDescription = "SKTextField form showcase",
+                    heading = true,
+                ),
+            )
+            SKText(
+                text = "lifecycle=${formState.lifecycle} · dirty=${formState.isDirty} · " +
+                    "valid=${formState.isValid} · errors=${formState.errorCount}",
+                appearance = SKAppearanceConfig.Text.copy(typographyRole = SKTypographyRole.BodySmall),
+            )
+
+            SKTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = email,
+                onValueChange = { email = it },
+                fieldId = "email",
+                label = "Email",
+                hint = "name@company.com",
+                required = true,
+                rules = listOf(SKRequiredRule(), SKEmailRule()),
+                formatter = SKTrimFormatter,
+                keyboardType = SKKeyboardType.Email,
+                imeAction = SKImeAction.Next,
+                accessibility = SKAccessibilityConfig(
+                    contentDescription = "Email",
+                    testTag = "field_email",
+                ),
+            )
+
+            SKTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = phone,
+                onValueChange = { phone = it },
+                fieldId = "phone",
+                label = "Phone",
+                hint = "(555) 123-4567",
+                required = true,
+                rules = listOf(SKRequiredRule()),
+                mask = SKInputMasks.UsPhone,
+                keyboardType = SKKeyboardType.Phone,
+                imeAction = SKImeAction.Done,
+                accessibility = SKAccessibilityConfig(
+                    contentDescription = "Phone",
+                    testTag = "field_phone",
+                ),
+            )
+
+            SKText(
+                text = "Validate",
+                appearance = SKAppearanceConfig.Text.copy(
+                    typographyRole = SKTypographyRole.LabelLarge,
+                    contentColorRole = SKColorRole.Primary,
+                ),
+                onClick = { controller.validate() },
+            )
+            SKText(
+                text = "Submit",
+                appearance = SKAppearanceConfig.Text.copy(
+                    typographyRole = SKTypographyRole.LabelLarge,
+                    contentColorRole = SKColorRole.Primary,
+                ),
+                onClick = { controller.submit() },
+            )
+            SKText(
+                text = "Reset",
+                appearance = SKAppearanceConfig.Text.copy(
+                    typographyRole = SKTypographyRole.LabelLarge,
+                    contentColorRole = SKColorRole.Secondary,
+                ),
+                onClick = {
+                    controller.reset()
+                    email = ""
+                    phone = ""
+                },
+            )
+
+            if (errors.isNotEmpty()) {
+                SKText(
+                    text = "errors=$errors",
+                    appearance = SKAppearanceConfig.Text.copy(
+                        typographyRole = SKTypographyRole.BodySmall,
+                        contentColorRole = SKColorRole.Error,
+                    ),
+                )
+            }
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun DesignSystemShowcasePreview() {
+private fun TextFieldFormShowcasePreview() {
     SKTheme(mode = SKThemeMode.Light) {
-        DesignSystemShowcase(initialized = true, pluginCount = 1)
+        TextFieldFormShowcase()
     }
 }

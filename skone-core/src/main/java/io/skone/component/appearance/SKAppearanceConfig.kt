@@ -50,5 +50,36 @@ public data class SKAppearanceConfig(
             containerColorRole = SKColorRole.Error,
             contentColorRole = SKColorRole.OnError,
         )
+
+        /** Default body text on surface (for SKText and similar). */
+        public val Text: SKAppearanceConfig = SKAppearanceConfig(
+            containerColorRole = SKColorRole.Surface,
+            contentColorRole = SKColorRole.OnSurface,
+            typographyRole = SKTypographyRole.BodyLarge,
+            outlineColorRole = null,
+            elevation = null,
+        )
+
+        /** Default text field: surface container, on-surface content, outline. */
+        public val TextField: SKAppearanceConfig = SKAppearanceConfig(
+            size = SKSize.Large,
+            shapeStyle = SKShapeStyle.Medium,
+            containerColorRole = SKColorRole.Surface,
+            contentColorRole = SKColorRole.OnSurface,
+            outlineColorRole = SKColorRole.Outline,
+            typographyRole = SKTypographyRole.BodyLarge,
+            elevation = SKElevationLevel.Level0,
+        )
+
+        /** Success-emphasis field chrome (outline/supporting use tertiary/primary as success proxy). */
+        public val TextFieldSuccess: SKAppearanceConfig = TextField.copy(
+            outlineColorRole = SKColorRole.Primary,
+        )
+
+        /** Error-emphasis field chrome. */
+        public val TextFieldError: SKAppearanceConfig = TextField.copy(
+            outlineColorRole = SKColorRole.Error,
+            contentColorRole = SKColorRole.OnSurface,
+        )
     }
 }
