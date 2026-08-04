@@ -26,10 +26,11 @@ internal object SkonePublishing {
 
     const val DESCRIPTION: String = "Open Android Developer Platform"
 
-    const val CENTRAL_STAGING_URL: String =
-        "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+    /** Maven Central Portal Publisher API (zip upload) — not OSSRH. */
+    const val CENTRAL_PORTAL_API: String = "https://central.sonatype.com/api/v1/publisher"
     const val CENTRAL_SNAPSHOT_URL: String =
         "https://central.sonatype.com/repository/maven-snapshots/"
+    const val MAVEN_CENTRAL_REPO: String = "https://repo.maven.apache.org/maven2"
 
     fun groupId(project: Project): String =
         project.findProperty("GROUP")?.toString()

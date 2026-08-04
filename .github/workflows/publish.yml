@@ -1,18 +1,30 @@
 name: Publish
 
-# Production release pipeline. Does NOT publish to Maven Central unless
-# publish_central=true AND secrets are configured.
+# Explicit Maven Central Portal pipeline (Publisher API via nmcp — not OSSRH).
+# Default: validate + local publish only.
+# Set publish_central=true to upload, validate, publish, and verify on Central.
 on:
   workflow_dispatch:
     inputs:
       publish_central:
-        description: "Publish to Maven Central Portal (requires secrets)"
+        description: "Upload & publish to Maven Central Portal (requires all secrets)"
         type: boolean
         default: false
       create_github_release:
-        description: "Create a GitHub Release for the current VERSION_NAME"
+        description: "Create a GitHub Release for VERSION_NAME"
         type: boolean
         default: true
+      debug_publish:
+        description: "Print publication / plugin / task debug details"
+        type: boolean
+        default: false
+      publishing_type:
+        description: "AUTOMATIC (nmcp end-to-end) or USER_MANAGED (explicit validate → publish stages)"
+        type: choice
+        options:
+          - USER_MANAGED
+          - AUTOMATIC
+        default: USER_MANAGED
   push:
     tags:
       - "v*"
@@ -22,7 +34,7 @@ permissions:
 
 jobs:
   release:
-    name: Validate · Build · Sign · Publish
+    name: Build → Validate → Sign → Central → Release
     runs-on: ubuntu-latest
 
     steps:
@@ -38,73 +50,173 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Grant execute permission
+        run: |
+          chmod +x gradlew
+          chmod +x scripts/central-portal.sh
 
       - name: Read VERSION_NAME
         id: version
         run: |
           VERSION=$(grep '^VERSION_NAME=' gradle.properties | cut -d= -f2)
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Publishing version: $VERSION"
+          echo "VERSION_NAME=${VERSION}"
 
-      - name: Build
-        run: ./gradlew assemble --stacktrace
-
-      - name: Test
-        run: ./gradlew check --stacktrace
-
-      - name: Detekt
-        run: ./gradlew detekt --stacktrace
-        continue-on-error: true
-
-      - name: Ktlint
-        run: ./gradlew ktlintCheck --stacktrace
-        continue-on-error: true
-
-      - name: Dokka
-        run: ./gradlew dokkaHtmlAll --stacktrace
-
-      - name: Verify publishing
-        run: ./gradlew verifyPublishing --stacktrace
-
-      - name: Publish to Maven Local
-        env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publishToMavenLocal --stacktrace
-
-      - name: Publish to local test repository
-        env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publishToLocalTestRepository --stacktrace
-
-      # Maven Central is opt-in. Milestone 1.3.2 prepares infra only —
-      # keep publish_central=false until you are ready to release.
-      - name: Publish to Maven Central Portal
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_central }}
-        env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
-          CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+      # -------------------- Stage 1: Build --------------------
+      - name: "Stage 1 — Build"
         run: |
-          if [ -z "$CENTRAL_PORTAL_USERNAME" ] || [ -z "$CENTRAL_PORTAL_PASSWORD" ]; then
-            echo "Central Portal secrets missing."
-            exit 1
+          echo "==> Stage 1: Build"
+          ./gradlew assemble --stacktrace
+          echo "✓ Build completed"
+
+      # -------------------- Stage 2: Tests --------------------
+      - name: "Stage 2 — Tests"
+        run: |
+          echo "==> Stage 2: Tests"
+          ./gradlew check --stacktrace
+          echo "✓ Tests passed"
+
+      # -------------------- Stage 3: Verify publishing --------------------
+      - name: "Stage 3 — Verify publishing"
+        run: |
+          echo "==> Stage 3: Verify publishing"
+          ./gradlew verifyPublishing printPublishingInfo --stacktrace
+          echo "✓ Publishing metadata verified"
+
+      # -------------------- Stage 4: Dokka --------------------
+      - name: "Stage 4 — Generate Dokka"
+        run: |
+          echo "==> Stage 4: Dokka"
+          ./gradlew dokkaHtmlAll --stacktrace
+          echo "✓ Dokka generated"
+
+      # -------------------- Debug (optional) --------------------
+      - name: "Debug — publishing diagnostics"
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_publish }}
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "==> Debug publish"
+          echo "--- Plugin / catalog versions (excerpt) ---"
+          grep -E '^(nmcp|kotlin|dokka|agp|skone) =' gradle/libs.versions.toml || true
+          grep -E 'VERSION_NAME|GROUP' gradle.properties || true
+          echo "--- Publishing tasks ---"
+          ./gradlew tasks --group=publishing --all
+          echo "--- nmcp / central tasks ---"
+          ./gradlew tasks --all 2>/dev/null | grep -iE 'nmcp|central|zipAggregation|publishAggregation' || true
+          echo "--- Publication info ---"
+          ./gradlew printPublishingInfo
+          echo "--- Repository / Portal URLs ---"
+          echo "Portal API: https://central.sonatype.com/api/v1/publisher"
+          echo "Portal UI:  https://central.sonatype.com/"
+          echo "Maven:      https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/"
+
+      # -------------------- Stage 5: Sign (local publish with signing) --------------------
+      - name: "Stage 5 — Sign artifacts (mavenLocal + local test repo)"
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "==> Stage 5: Sign + local publish"
+          if [[ "${{ github.event_name == 'workflow_dispatch' && inputs.publish_central }}" == "true" ]]; then
+            ./gradlew requireCentralSecrets --stacktrace
           fi
-          if [ -z "$SIGNING_KEY" ]; then
-            echo "SIGNING_KEY is required for Maven Central."
-            exit 1
-          fi
-          ./gradlew publishReleasePublicationToCentralPortalRepository --stacktrace
+          ./gradlew publishToMavenLocal publishToLocalTestRepository --stacktrace
+          echo "✓ Signing successful (when SIGNING_KEY present) / local publish complete"
+          echo "Local test repo: build/local-maven-repo"
 
       - name: Upload local Maven repo artifact
         uses: actions/upload-artifact@v4
         with:
           name: local-maven-repo
           path: build/local-maven-repo
+
+      # -------------------- Stages 6–10: Maven Central Portal --------------------
+      - name: "Stages 6–10 — Central Portal upload / validate / publish"
+        id: central
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_central }}
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+          CENTRAL_PUBLISHING_TYPE: ${{ inputs.publishing_type }}
+        run: |
+          set -euo pipefail
+          echo "==> Fail-fast secret check"
+          ./gradlew requireCentralSecrets --stacktrace
+
+          echo "==> Stage 6: Generate + upload deployment bundle"
+          ./gradlew nmcpZipAggregation --stacktrace
+          BUNDLE_PATH="build/nmcp/zip/aggregation.zip"
+          if [[ -f "$BUNDLE_PATH" ]]; then
+            echo "Bundle path: $(pwd)/${BUNDLE_PATH}"
+            ls -lh "$BUNDLE_PATH"
+          else
+            echo "⚠ Expected zip at ${BUNDLE_PATH} — checking build/nmcp…"
+            find build/nmcp -type f 2>/dev/null || true
+          fi
+
+          echo "Publishing type: ${CENTRAL_PUBLISHING_TYPE}"
+          # USER_MANAGED: upload → VALIDATED (then Stages 8–10 below).
+          # AUTOMATIC: nmcp continues through publish.
+          ./gradlew publishAggregationToCentralPortal --stacktrace --info | tee /tmp/skone-central.log
+          echo "✓ Upload complete"
+
+          echo "==> Stage 7: Deployment ID"
+          DEPLOYMENT_ID="$(
+            grep -Eo 'deployment bundle ['\''\"]?[A-Za-z0-9_-]+' /tmp/skone-central.log \
+              | tail -1 \
+              | grep -Eo '[A-Za-z0-9_-]+$' \
+            || true
+          )"
+          if [[ -z "${DEPLOYMENT_ID}" ]]; then
+            DEPLOYMENT_ID="$(
+              grep -Eo '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' /tmp/skone-central.log \
+                | tail -1 \
+              || true
+            )"
+          fi
+          if [[ -n "${DEPLOYMENT_ID}" ]]; then
+            echo "Deployment ID:"
+            echo "${DEPLOYMENT_ID}"
+            echo "deployment_id=${DEPLOYMENT_ID}" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠ Could not parse Deployment ID from logs."
+            echo "  Check https://central.sonatype.com/ for deployment 'SKOne ${{ steps.version.outputs.version }}'"
+          fi
+
+          if [[ "${CENTRAL_PUBLISHING_TYPE}" == "USER_MANAGED" ]]; then
+            if [[ -z "${DEPLOYMENT_ID}" ]]; then
+              echo "✗ USER_MANAGED requires a Deployment ID for Stages 8–10"
+              exit 1
+            fi
+            echo "==> Stage 8: Wait until VALIDATED (poll 10s, max 15m)"
+            ./scripts/central-portal.sh wait "${DEPLOYMENT_ID}" VALIDATED 900
+            echo "==> Stage 9: Publish deployment"
+            ./scripts/central-portal.sh publish "${DEPLOYMENT_ID}"
+            echo "==> Stage 10: Wait until PUBLISHED (poll 10s, max 15m)"
+            ./scripts/central-portal.sh wait "${DEPLOYMENT_ID}" PUBLISHED 900
+          else
+            echo "==> Stages 8–10 handled by nmcp AUTOMATIC (validate → publish)"
+            echo "✓ Deployment published (AUTOMATIC)"
+          fi
+
+      # -------------------- Stage 11: Verify artifact --------------------
+      - name: "Stage 11 — Verify artifact on Maven Central"
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_central }}
+        env:
+          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "==> Stage 11: Verify"
+          ./scripts/central-portal.sh verify-maven "${{ steps.version.outputs.version }}" skone-bom
+          echo "Portal: https://central.sonatype.com/"
+          echo "Repo:   https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/"
 
       - name: Create GitHub Release
         if: ${{ (github.event_name == 'workflow_dispatch' && inputs.create_github_release) || startsWith(github.ref, 'refs/tags/v') }}

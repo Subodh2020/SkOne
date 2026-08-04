@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -8,6 +10,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.paparazzi) apply false
+    alias(libs.plugins.nmcp.aggregation)
 }
 
 val publishableProjects = listOf(
@@ -21,6 +24,38 @@ val publishableProjects = listOf(
     ":skone-compose",
     ":skone-xml",
 )
+
+/**
+ * Aggregates all skone.publish modules into one Central Portal deployment (zip + Publisher API).
+ *
+ * Credentials are read from the environment. Tasks that upload fail fast if missing.
+ */
+nmcpAggregation {
+    publishAllProjectsProbablyBreakingProjectIsolation()
+    centralPortal {
+        username.set(
+            providers.environmentVariable("CENTRAL_PORTAL_USERNAME")
+                .orElse(providers.gradleProperty("CENTRAL_PORTAL_USERNAME"))
+                .orElse(""),
+        )
+        password.set(
+            providers.environmentVariable("CENTRAL_PORTAL_PASSWORD")
+                .orElse(providers.gradleProperty("CENTRAL_PORTAL_PASSWORD"))
+                .orElse(""),
+        )
+        // AUTOMATIC = upload → validate → publish. USER_MANAGED = stop at VALIDATED.
+        publishingType.set(
+            providers.environmentVariable("CENTRAL_PUBLISHING_TYPE").orElse("AUTOMATIC"),
+        )
+        publicationName.set(
+            providers.provider {
+                "SKOne ${findProperty("VERSION_NAME") ?: "unknown"}"
+            },
+        )
+        validationTimeout.set(Duration.ofMinutes(15))
+        publishingTimeout.set(Duration.ofMinutes(15))
+    }
+}
 
 tasks.register("verifyPublishing") {
     group = "publishing"
@@ -38,6 +73,12 @@ tasks.register("verifySigning") {
     group = "publishing"
     description = "Validates signing configuration for all publishable modules"
     dependsOn(publishableProjects.map { "$it:verifySigning" })
+}
+
+tasks.register("printPublishingInfo") {
+    group = "publishing"
+    description = "Prints publication coordinates for every publishable module"
+    dependsOn(publishableProjects.map { "$it:printPublishingInfo" })
 }
 
 tasks.register("publishToLocalTestRepository") {
@@ -61,4 +102,27 @@ tasks.register("dokkaHtmlAll") {
             ":skone-xml",
         ).map { "$it:dokkaHtml" },
     )
+}
+
+tasks.register("requireCentralSecrets") {
+    group = "publishing"
+    description = "Fails if Maven Central / signing secrets are missing"
+    doLast {
+        val required = listOf(
+            "SIGNING_KEY",
+            "SIGNING_PASSWORD",
+            "CENTRAL_PORTAL_USERNAME",
+            "CENTRAL_PORTAL_PASSWORD",
+        )
+        val missing = required.filter { name ->
+            System.getenv(name).isNullOrBlank() && findProperty(name)?.toString().isNullOrBlank()
+        }
+        if (missing.isNotEmpty()) {
+            throw GradleException(
+                "Missing required publishing secrets: ${missing.joinToString()}. " +
+                    "Set them as environment variables before Central publish.",
+            )
+        }
+        logger.lifecycle("✓ Required Central publishing secrets are present")
+    }
 }

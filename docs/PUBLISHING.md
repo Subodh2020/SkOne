@@ -1,8 +1,10 @@
 # SKOne Publishing Guide
 
-Production-grade Maven publishing for the SKOne SDK.
+Production-grade Maven publishing for the SKOne SDK using the **Maven Central Portal Publisher API** (via [nmcp](https://github.com/GradleUp/nmcp)).
 
-**Milestone:** 1.3.2 — publishing infrastructure (do **not** publish to Maven Central until explicitly ready).
+**Not used:** deprecated OSSRH staging repositories.
+
+**Milestone:** 1.3.2 — publishing infrastructure. Central upload runs only when GitHub Actions `publish_central=true`.
 
 ## Coordinates
 
@@ -14,6 +16,8 @@ Production-grade Maven publishing for the SKOne SDK.
 | Kotlin packages | `io.skone.*` (unchanged) |
 | Site | https://skone.thesubodhgupta.com |
 | SCM | https://github.com/Subodh2020/SkOne |
+| Portal UI | https://central.sonatype.com/ |
+| Maven Central | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 
 Example dependency:
 
@@ -21,6 +25,17 @@ Example dependency:
 implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha01")
 implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha01"))
 ```
+
+## Architecture
+
+| Layer | Responsibility |
+|-------|----------------|
+| `skone.publish` convention | Per-module Maven publication, POM, sources, Dokka javadoc JAR, signing, local repos |
+| Root `nmcpAggregation` | Single zip deployment to Central Portal Publisher API |
+| `scripts/central-portal.sh` | Status / wait / publish / verify helpers for explicit CI stages |
+| `.github/workflows/publish.yml` | Explicit Build → Test → Verify → Dokka → Sign → Upload → Validate → Publish → Verify |
+
+No hidden OSSRH staging. Central publish is always opt-in.
 
 ## Onboarding a new module
 
@@ -38,7 +53,7 @@ plugins {
 4. Add a BOM constraint in `skone-bom` when it should be version-aligned.
 5. Add the path to `publishableProjects` in the root `build.gradle.kts`.
 
-No other publishing configuration is required.
+Root `nmcpAggregation { publishAllProjectsProbablyBreakingProjectIsolation() }` picks up any project that applies `maven-publish` (via `skone.publish`).
 
 ## Versioning
 
@@ -54,9 +69,12 @@ Single source of truth: **`VERSION_NAME`** in `gradle.properties`.
 
 Also keep the `skone` version in `gradle/libs.versions.toml` in sync for documentation consistency (publishing reads `VERSION_NAME`).
 
-## Local publishing
+## How local publish works
 
 ```bash
+# Inspect every publication
+./gradlew printPublishingInfo
+
 # Validate POM / signing configuration
 ./gradlew verifyPublishing
 
@@ -65,6 +83,10 @@ Also keep the `skone` version in `gradle/libs.versions.toml` in sync for documen
 
 # Publish into ./build/local-maven-repo (CI artifact)
 ./gradlew publishToLocalTestRepository
+
+# Inspect the Central deployment zip (no upload)
+./gradlew nmcpZipAggregation
+# → build/nmcp/zip/aggregation.zip
 ```
 
 Consume from the test repo:
@@ -75,20 +97,90 @@ repositories {
 }
 ```
 
-## Signing
+Local publish never talks to Maven Central. Signing runs only when `SIGNING_KEY` is set.
 
-Environment variables (never commit secrets):
+## How GitHub publish works
+
+Workflow: [`.github/workflows/publish.yml`](../.github/workflows/publish.yml)
+
+| Input | Default | Meaning |
+|-------|---------|---------|
+| `publish_central` | `false` | When `true`, run Central Portal stages |
+| `create_github_release` | `true` | Tag / GH Release for `VERSION_NAME` |
+| `debug_publish` | `false` | Extra task / plugin / metadata logs |
+| `publishing_type` | `USER_MANAGED` | Explicit validate → publish stages (recommended) |
+
+### Stages (when `publish_central=true`)
+
+1. **Build** — `assemble`
+2. **Tests** — `check`
+3. **Verify publishing** — `verifyPublishing` + `printPublishingInfo`
+4. **Dokka** — `dokkaHtmlAll`
+5. **Sign** — `publishToMavenLocal` + `publishToLocalTestRepository` (requires signing secrets for Central)
+6. **Upload bundle** — `nmcpZipAggregation` then `publishAggregationToCentralPortal` (prints bundle path)
+7. **Deployment ID** — parsed from nmcp logs
+8. **Wait VALIDATED** — poll every 10s, max 15 minutes (`USER_MANAGED`)
+9. **Publish deployment** — Portal API `POST …/deployment/{id}`
+10. **Wait PUBLISHED** — poll every 10s, max 15 minutes
+11. **Verify artifact** — HTTP check on `repo.maven.apache.org` + Portal UI link
+
+`AUTOMATIC` skips stages 8–9 script calls; nmcp performs validate + publish itself.
+
+Fail-fast: missing any of `SIGNING_KEY`, `SIGNING_PASSWORD`, `CENTRAL_PORTAL_USERNAME`, `CENTRAL_PORTAL_PASSWORD` aborts before upload (`requireCentralSecrets`).
+
+## How Maven Central deployment works
+
+1. Gradle builds all publications (AAR/JAR + sources + javadoc + POM + signatures).
+2. nmcp packs them into one zip: `build/nmcp/zip/aggregation.zip`.
+3. Zip is uploaded to `https://central.sonatype.com/api/v1/publisher/upload`.
+4. Portal returns a **Deployment ID**.
+5. Portal validates coordinates, signatures, POM, and namespace ownership → `VALIDATED` or `FAILED`.
+
+Namespace `com.thesubodhgupta.skone` must already be verified (it is).
+
+## How deployment gets published
+
+| Mode | Behavior |
+|------|----------|
+| `USER_MANAGED` (default in CI) | Stops at `VALIDATED`. CI (or Portal UI) calls publish. Then state → `PUBLISHING` → `PUBLISHED`. |
+| `AUTOMATIC` | Portal publishes automatically after successful validation. |
+
+After `PUBLISHED`, artifacts appear under:
+
+`https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/`
+
+Helpers:
+
+```bash
+./scripts/central-portal.sh status <deploymentId>
+./scripts/central-portal.sh wait <deploymentId> VALIDATED 900
+./scripts/central-portal.sh publish <deploymentId>
+./scripts/central-portal.sh wait <deploymentId> PUBLISHED 900
+./scripts/central-portal.sh verify-maven 1.3.2-alpha01 skone-bom
+```
+
+## Expected timelines
+
+| Phase | Typical | Timeout in CI |
+|-------|---------|---------------|
+| Local assemble / publish | minutes | — |
+| Bundle upload | seconds–few minutes | — |
+| Portal validation (`VALIDATED`) | ~1–10 minutes | 15 minutes |
+| Publish → `PUBLISHED` | ~1–10 minutes | 15 minutes |
+| Visible on `repo.maven.apache.org` | often immediate after `PUBLISHED`; can lag | Stage 11 warns if missing |
+
+CDN / mirror propagation can take additional minutes. Stage 11 prints a clear warning if the listing is not yet HTTP 200.
+
+## Signing
 
 | Variable | Purpose |
 |----------|---------|
-| `SIGNING_KEY` | ASCII-armored private PGP key (or exported secret key block) |
+| `SIGNING_KEY` | ASCII-armored private PGP key |
 | `SIGNING_PASSWORD` | Key passphrase |
 
 Without these variables, local publish still works; signing is skipped (`signing.required = false`).
 
 Maven Central **requires** signing.
-
-Export a key for CI:
 
 ```bash
 gpg --export-secret-keys --armor YOUR_KEY_ID
@@ -100,69 +192,47 @@ gpg --export-secret-keys --armor YOUR_KEY_ID
 |----------|---------|
 | `CENTRAL_PORTAL_USERNAME` | Portal user token username |
 | `CENTRAL_PORTAL_PASSWORD` | Portal user token password |
+| `CENTRAL_PUBLISHING_TYPE` | Optional Gradle override: `AUTOMATIC` or `USER_MANAGED` |
 
 Generate tokens at https://central.sonatype.com/usertoken
-
-Repositories configured by `skone.publish`:
-
-- Releases → OSSRH Staging API (`ossrh-staging-api.central.sonatype.com`)
-- Snapshots → Central snapshots repository
 
 ## Dokka
 
 Applied automatically by `skone.publish` on Android / JVM libraries.
 
 ```bash
-./gradlew dokkaHtmlAll          # HTML per module
+./gradlew dokkaHtmlAll
 ./gradlew :skone-ui:dokkaJavadocJar
 ```
-
-Javadoc JARs are attached to Maven publications.
 
 ## Validation tasks
 
 | Task | Scope |
 |------|-------|
+| `printPublishingInfo` | Coordinates, repo, signed flag |
 | `verifyPom` | Coordinates + publication presence |
 | `verifySigning` | Signing enabled when `SIGNING_KEY` set |
-| `verifyPublishing` | Both of the above |
+| `verifyPublishing` | Pom + signing + print |
 | `publishToLocalTestRepository` | Dry-run style local repo publish |
-
-Root aggregates run across all publishable modules.
-
-## GitHub Actions
-
-### CI (`.github/workflows/ci.yml`)
-
-Checkout → JDK 17 → Gradle cache → `check` → `verifyPublishing` → Dokka
-
-### Publish (`.github/workflows/publish.yml`)
-
-Triggers:
-
-- Manual `workflow_dispatch`
-- Tags `v*`
-
-Pipeline: build → tests → quality → Dokka → verify → `publishToMavenLocal` → local test repo → **optional** Central (`publish_central=true`) → GitHub Release
-
-Required secrets for signed / Central releases:
-
-- `SIGNING_KEY`
-- `SIGNING_PASSWORD`
-- `CENTRAL_PORTAL_USERNAME`
-- `CENTRAL_PORTAL_PASSWORD`
+| `nmcpZipAggregation` | Build Central zip (no upload) |
+| `publishAggregationToCentralPortal` | Upload (+ validate / publish per type) |
+| `requireCentralSecrets` | Fail if Central/signing env missing |
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---------|-----|
-| Wrong group/version | Edit `GROUP` / `VERSION_NAME` in `gradle.properties`, re-sync |
-| Dokka task missing | Ensure module applies `skone.publish` and is an Android library |
-| Signing failures in CI | Confirm `SIGNING_KEY` is the full armored key; passphrase in `SIGNING_PASSWORD` |
-| Central repo missing | Credentials only add the remote when both Portal env vars are set |
-| BOM not published | BOM uses `skone.publish` + `java-platform` |
+| CI green but nothing on Central | Old OSSRH staging path. Use nmcp Portal API (`publishAggregationToCentralPortal`) with `publish_central=true`. |
+| Wrong group/version | Edit `GROUP` / `VERSION_NAME` in `gradle.properties` |
+| Missing secrets | Set all four env/secrets; `requireCentralSecrets` fails fast |
+| Signing failures | Full armored key in `SIGNING_KEY`; passphrase in `SIGNING_PASSWORD` |
+| Validation `FAILED` | Check Portal deployment errors (POM, signatures, duplicate version) |
+| Timed out waiting `VALIDATED`/`PUBLISHED` | Check Portal UI; re-run `scripts/central-portal.sh wait …` |
+| Artifact URL 404 after `PUBLISHED` | Wait for propagation; Stage 11 warns — check Portal + Maven URL |
+| Deployment ID not parsed | Open Portal UI; search publication name `SKOne <version>` |
+| Module missing from zip | Ensure `skone.publish` + entry in `publishableProjects` |
 
 ## Related
 
 - [ADR 0013](adr/0013-maven-central-publishing.md)
-- [ADR 0006](adr/0006-maven-coordinates-and-semver.md) (coordinates history)
+- [ADR 0006](adr/0006-maven-coordinates-and-semver.md)

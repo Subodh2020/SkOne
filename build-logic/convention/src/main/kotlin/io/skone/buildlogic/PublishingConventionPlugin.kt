@@ -24,8 +24,8 @@ import org.gradle.plugins.signing.SigningExtension
  * }
  * ```
  *
- * Configures Maven Central–ready publications: AAR/JAR, sources, Dokka Javadoc,
- * POM metadata, optional GPG signing, and local + Central Portal repositories.
+ * Configures Maven Central–ready publications (AAR/JAR, sources, Dokka Javadoc, POM)
+ * plus GPG signing. Central uploads use root [nmcpAggregation] (Publisher API) — not OSSRH.
  */
 class PublishingConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -118,9 +118,10 @@ class PublishingConventionPlugin : Plugin<Project> {
     }
 
     private fun Project.finalizePublishingSetup() {
-        configureRepositories()
+        configureLocalRepositories()
         configureSigning()
         registerValidationTasks()
+        registerPrintPublishingInfo()
     }
 
     private fun Project.registerDokkaJavadocJar() = tasks.register<Jar>("dokkaJavadocJar") {
@@ -169,31 +170,13 @@ class PublishingConventionPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureRepositories() {
+    /** Local-only repos. Central uploads go through nmcp Portal Publisher API (zip). */
+    private fun Project.configureLocalRepositories() {
         extensions.configure<PublishingExtension> {
             repositories {
                 maven {
                     name = "LocalTest"
                     url = uri(rootProject.layout.buildDirectory.dir("local-maven-repo"))
-                }
-
-                val user = SkonePublishing.envOrProperty(project, "CENTRAL_PORTAL_USERNAME")
-                val pass = SkonePublishing.envOrProperty(project, "CENTRAL_PORTAL_PASSWORD")
-                if (!user.isNullOrBlank() && !pass.isNullOrBlank()) {
-                    maven {
-                        name = "CentralPortal"
-                        url = uri(
-                            if (SkonePublishing.isSnapshot(SkonePublishing.versionName(project))) {
-                                SkonePublishing.CENTRAL_SNAPSHOT_URL
-                            } else {
-                                SkonePublishing.CENTRAL_STAGING_URL
-                            },
-                        )
-                        credentials {
-                            username = user
-                            password = pass
-                        }
-                    }
                 }
             }
         }
@@ -211,6 +194,42 @@ class PublishingConventionPlugin : Plugin<Project> {
             signing.isRequired = true
         } else {
             signing.isRequired = false
+        }
+    }
+
+    private fun Project.registerPrintPublishingInfo() {
+        if (tasks.findByName("printPublishingInfo") != null) return
+
+        tasks.register("printPublishingInfo") {
+            group = "publishing"
+            description = "Prints Maven publication coordinates and signing status"
+            doLast {
+                val groupId = SkonePublishing.groupId(project)
+                val version = SkonePublishing.versionName(project)
+                val signing = project.extensions.getByType<SigningExtension>()
+                val signed = !SkonePublishing.envOrProperty(project, "SIGNING_KEY").isNullOrBlank() &&
+                    signing.isRequired
+                val publishing = project.extensions.getByType<PublishingExtension>()
+                val pubs = publishing.publications.withType<MavenPublication>()
+                    .joinToString(", ") { it.name }
+                    .ifBlank { "(none)" }
+                val repos = publishing.repositories
+                    .map { it.name }
+                    .filterNot { it.equals("nmcp", ignoreCase = true) }
+                    .joinToString(", ")
+                    .ifBlank { "LocalTest (via publishToLocalTestRepository)" }
+
+                logger.lifecycle("----------------------------------------")
+                logger.lifecycle("Module : ${project.name}")
+                logger.lifecycle("Group  : $groupId")
+                logger.lifecycle("Artifact : ${project.name}")
+                logger.lifecycle("Version : $version")
+                logger.lifecycle("Publications : $pubs")
+                logger.lifecycle("Local repositories : $repos")
+                logger.lifecycle("Repository : Maven Central Portal")
+                logger.lifecycle("Signed : $signed")
+                logger.lifecycle("----------------------------------------")
+            }
         }
     }
 
@@ -263,7 +282,7 @@ class PublishingConventionPlugin : Plugin<Project> {
         tasks.register("verifyPublishing") {
             group = "publishing"
             description = "Runs all publishing validation checks for this module"
-            dependsOn("verifyPom", "verifySigning")
+            dependsOn("verifyPom", "verifySigning", "printPublishingInfo")
         }
 
         tasks.register("publishToLocalTestRepository") {
