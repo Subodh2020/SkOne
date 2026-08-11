@@ -53,7 +53,7 @@ nmcpAggregation {
             },
         )
         validationTimeout.set(Duration.ofMinutes(15))
-        publishingTimeout.set(Duration.ofMinutes(15))
+        // publishingTimeout is only valid for AUTOMATIC; CI uses USER_MANAGED + central-portal.sh.
     }
 }
 
