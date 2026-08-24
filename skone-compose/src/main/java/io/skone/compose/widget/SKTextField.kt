@@ -1,5 +1,7 @@
 package io.skone.compose.widget
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,17 +31,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.lerp
 import io.skone.component.SKAnalyticsConfig
 import io.skone.component.accessibility.SKAccessibilityConfig
 import io.skone.component.ai.SKAIComponentConfig
@@ -206,17 +214,49 @@ public fun SKTextField(
         resolvedAppearance.typographyRole ?: SKTypographyRole.BodyLarge,
     ).toTextStyle().copy(color = look.contentColor)
 
+    var internalText by remember { mutableStateOf(value) }
+    LaunchedEffect(value) { internalText = value }
+
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
-    val outlineColor = look.outlineColor ?: theme.tokens.colors.outline.toColor()
+    val hasLabel = label != null
+    val labelText = label?.let { if (required) "$it *" else it }
+    val labelFloating = hasLabel && (focused || internalText.isNotEmpty())
+    val labelProgress by animateFloatAsState(
+        targetValue = if (labelFloating) 1f else 0f,
+        animationSpec = tween(durationMillis = 150),
+        label = "skTextFieldLabelFloat",
+    )
+    val showHintInField = hint != null &&
+        internalText.isEmpty() &&
+        (!hasLabel || labelFloating)
+    val outlineBase = look.outlineColor ?: theme.tokens.colors.outline.toColor()
+    val borderColor = when {
+        !enabled -> outlineBase.copy(alpha = DisabledAlpha)
+        visualState == SKFieldVisualState.Error -> theme.tokens.colors.error.toColor()
+        focused -> theme.tokens.colors.primary.toColor()
+        else -> outlineBase
+    }
     val borderWidth = if (focused) {
         theme.tokens.spacing.xs.toDp()
     } else {
         theme.tokens.spacing.xxs.toDp()
     }
-
-    var internalText by remember { mutableStateOf(value) }
-    LaunchedEffect(value) { internalText = value }
+    val labelRestingStyle = theme.tokens.typography.scale(SKTypographyRole.BodyLarge)
+        .toTextStyle()
+        .copy(color = labelContentColor(theme, visualState, enabled, focused = false))
+    val labelFloatingStyle = theme.tokens.typography.scale(SKTypographyRole.LabelSmall)
+        .toTextStyle()
+        .copy(color = labelContentColor(theme, visualState, enabled, focused = focused || labelFloating))
+    val fieldAlpha = if (enabled) 1f else DisabledAlpha
+    val labelSlotHeight = theme.tokens.spacing.sm.toDp()
+    val labelCutoutPadding = if (hasLabel) labelSlotHeight / 2 else theme.tokens.spacing.none.toDp()
+    val contentTopInset = if (hasLabel && labelFloating) labelSlotHeight else theme.tokens.spacing.none.toDp()
+    val labelRestingOffsetY = (look.height - labelSlotHeight) / 2
+    val labelFloatingOffsetY = -labelCutoutPadding
+    val labelOffsetY = lerp(labelRestingOffsetY, labelFloatingOffsetY, labelProgress)
+    val labelHorizontalInset = look.horizontalPadding +
+        if (leadingIcon != null) look.iconSize + theme.tokens.spacing.xs.toDp() else theme.tokens.spacing.none.toDp()
 
     fun handleIme() {
         onImeAction?.invoke(imeAction)
@@ -230,6 +270,7 @@ public fun SKTextField(
 
     Column(
         modifier = modifier
+            .alpha(fieldAlpha)
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibility.contentDescription
                     ?: label
@@ -242,103 +283,117 @@ public fun SKTextField(
             }
             .skLayout(layout),
     ) {
-        if (label != null) {
-            SKText(
-                text = if (required) "$label *" else label,
-                appearance = SKAppearanceConfig.Text.copy(
-                    typographyRole = SKTypographyRole.LabelMedium,
-                    contentColorRole = if (visualState == SKFieldVisualState.Error) {
-                        SKColorRole.Error
-                    } else {
-                        SKColorRole.OnSurfaceVariant
-                    },
-                ),
-            )
-            Spacer(modifier = Modifier.height(theme.tokens.spacing.xs.toDp()))
-        }
-
-        BasicTextField(
-            value = internalText,
-            onValueChange = { raw ->
-                if (!enabled || readOnly) return@BasicTextField
-                if (form != null) {
-                    form.updateRawInput(id, raw)
-                    val display = form.registry.state(id)?.displayValue ?: raw
-                    internalText = display
-                    onValueChange(display)
-                } else {
-                    internalText = raw
-                    component.setValue(raw, fromUser = true)
-                    onValueChange(raw)
-                }
-            },
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged { state ->
-                    component.onFocusChanged(state.isFocused)
-                    if (state.isFocused) {
-                        form?.requestFocus(id)
+                .padding(top = labelCutoutPadding),
+        ) {
+            BasicTextField(
+                value = internalText,
+                onValueChange = { raw ->
+                    if (!enabled || readOnly) return@BasicTextField
+                    if (form != null) {
+                        form.updateRawInput(id, raw)
+                        val display = form.registry.state(id)?.displayValue ?: raw
+                        internalText = display
+                        onValueChange(display)
+                    } else {
+                        internalText = raw
+                        component.setValue(raw, fromUser = true)
+                        onValueChange(raw)
                     }
                 },
-            enabled = enabled,
-            readOnly = readOnly,
-            textStyle = bodyStyle,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            visualTransformation = if (keyboardType == SKKeyboardType.Password) {
-                PasswordVisualTransformation()
-            } else {
-                visualTransformation
-            },
-            cursorBrush = SolidColor(theme.tokens.colors.primary.toColor()),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = keyboardType.toCompose(),
-                imeAction = imeAction.toCompose(),
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { handleIme() },
-                onGo = { handleIme() },
-                onNext = { handleIme() },
-                onPrevious = { handleIme() },
-                onSearch = { handleIme() },
-                onSend = { handleIme() },
-            ),
-            interactionSource = interaction,
-            decorationBox = { inner ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = look.height)
-                        .background(look.containerColor, look.shape)
-                        .border(borderWidth, outlineColor, look.shape)
-                        .padding(
-                            horizontal = look.horizontalPadding,
-                            vertical = look.verticalPadding,
-                        ),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (leadingIcon != null) {
-                        IconSlot(key = leadingIcon, size = look.iconSize, runtime = runtime)
-                        Spacer(modifier = Modifier.width(theme.tokens.spacing.xs.toDp()))
-                    }
-                    Box(modifier = Modifier.weight(1f)) {
-                        if (internalText.isEmpty() && hint != null) {
-                            BasicText(
-                                text = hint,
-                                style = bodyStyle.copy(
-                                    color = theme.tokens.colors.onSurfaceVariant.toColor(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { state ->
+                        component.onFocusChanged(state.isFocused)
+                        if (state.isFocused) {
+                            form?.requestFocus(id)
+                        }
+                    },
+                enabled = enabled,
+                readOnly = readOnly,
+                textStyle = bodyStyle,
+                singleLine = singleLine,
+                maxLines = maxLines,
+                visualTransformation = if (keyboardType == SKKeyboardType.Password) {
+                    PasswordVisualTransformation()
+                } else {
+                    visualTransformation
+                },
+                cursorBrush = SolidColor(theme.tokens.colors.primary.toColor()),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = keyboardType.toCompose(),
+                    imeAction = imeAction.toCompose(),
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { handleIme() },
+                    onGo = { handleIme() },
+                    onNext = { handleIme() },
+                    onPrevious = { handleIme() },
+                    onSearch = { handleIme() },
+                    onSend = { handleIme() },
+                ),
+                interactionSource = interaction,
+                decorationBox = { inner ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = look.height + contentTopInset),
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter)
+                                .heightIn(min = look.height)
+                                .background(look.containerColor, look.shape)
+                                .border(borderWidth, borderColor, look.shape)
+                                .padding(
+                                    start = look.horizontalPadding,
+                                    end = look.horizontalPadding,
+                                    top = look.verticalPadding + contentTopInset,
+                                    bottom = look.verticalPadding,
                                 ),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            if (leadingIcon != null) {
+                                IconSlot(key = leadingIcon, size = look.iconSize, runtime = runtime)
+                                Spacer(modifier = Modifier.width(theme.tokens.spacing.xs.toDp()))
+                            }
+                            Box(modifier = Modifier.weight(1f)) {
+                                if (showHintInField) {
+                                    BasicText(
+                                        text = hint.orEmpty(),
+                                        style = bodyStyle.copy(
+                                            color = theme.tokens.colors.onSurfaceVariant.toColor(),
+                                        ),
+                                    )
+                                }
+                                inner()
+                            }
+                            if (trailingIcon != null) {
+                                Spacer(modifier = Modifier.width(theme.tokens.spacing.xs.toDp()))
+                                IconSlot(key = trailingIcon, size = look.iconSize, runtime = runtime)
+                            }
+                        }
+
+                        if (labelText != null) {
+                            FloatingFieldLabel(
+                                text = labelText,
+                                progress = labelProgress,
+                                restingStyle = labelRestingStyle,
+                                floatingStyle = labelFloatingStyle,
+                                containerColor = look.containerColor,
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .padding(start = labelHorizontalInset)
+                                    .offset(y = labelOffsetY),
                             )
                         }
-                        inner()
                     }
-                    if (trailingIcon != null) {
-                        Spacer(modifier = Modifier.width(theme.tokens.spacing.xs.toDp()))
-                        IconSlot(key = trailingIcon, size = look.iconSize, runtime = runtime)
-                    }
-                }
-            },
-        )
+                },
+            )
+        }
 
         val support = supportOverride ?: supportingText
         if (support != null) {
@@ -355,6 +410,33 @@ public fun SKTextField(
                 ),
             )
         }
+    }
+}
+
+@Composable
+private fun FloatingFieldLabel(
+    text: String,
+    progress: Float,
+    restingStyle: TextStyle,
+    floatingStyle: TextStyle,
+    containerColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    val cutoutShape = RoundedCornerShape(skTheme.tokens.spacing.xxs.toDp())
+    Box(modifier = modifier) {
+        BasicText(
+            text = text,
+            style = restingStyle,
+            modifier = Modifier.alpha(1f - progress.coerceIn(0f, 1f)),
+        )
+        BasicText(
+            text = text,
+            style = floatingStyle,
+            modifier = Modifier
+                .alpha(progress.coerceIn(0f, 1f))
+                .background(color = containerColor, shape = cutoutShape)
+                .padding(horizontal = skTheme.tokens.spacing.xxs.toDp()),
+        )
     }
 }
 
@@ -399,4 +481,21 @@ private fun SKKeyboardType.toCompose(): KeyboardType = when (this) {
     SKKeyboardType.Email -> KeyboardType.Email
     SKKeyboardType.Password -> KeyboardType.Password
     SKKeyboardType.Uri -> KeyboardType.Uri
+}
+
+private const val DisabledAlpha = 0.38f
+
+private fun labelContentColor(
+    theme: io.skone.theme.SKTheme,
+    visualState: SKFieldVisualState,
+    enabled: Boolean,
+    focused: Boolean,
+): Color {
+    val colors = theme.tokens.colors
+    return when {
+        !enabled -> colors.onSurfaceVariant.toColor().copy(alpha = DisabledAlpha)
+        visualState == SKFieldVisualState.Error -> colors.error.toColor()
+        focused -> colors.primary.toColor()
+        else -> colors.onSurfaceVariant.toColor()
+    }
 }

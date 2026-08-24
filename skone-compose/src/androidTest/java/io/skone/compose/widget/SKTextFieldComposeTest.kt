@@ -9,6 +9,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.skone.component.accessibility.SKAccessibilityConfig
@@ -34,7 +35,7 @@ class SKTextFieldComposeTest {
     val composeRule = createComposeRule()
 
     @Test
-    fun displaysLabelAndHint() {
+    fun emptyUnfocusedShowsLabelNotHint() {
         composeRule.setContent {
             SKTheme(mode = SKThemeMode.Light) {
                 val runtime = rememberSKComponentRuntime()
@@ -51,7 +52,117 @@ class SKTextFieldComposeTest {
             }
         }
         composeRule.onNodeWithText("Email").assertIsDisplayed()
+        composeRule.onNodeWithText("name@company.com").assertDoesNotExist()
+    }
+
+    @Test
+    fun focusedEmptyShowsFloatingLabelAndHint() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                var value by remember { mutableStateOf("") }
+                SKTextField(
+                    value = value,
+                    onValueChange = { value = it },
+                    fieldId = "email",
+                    label = "Email",
+                    hint = "name@company.com",
+                    accessibility = SKAccessibilityConfig(
+                        contentDescription = "Email field",
+                        testTag = "email_field",
+                    ),
+                )
+            }
+        }
+        composeRule.onNodeWithTag("email_field").performClick()
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText("Email").assertIsDisplayed()
         composeRule.onNodeWithText("name@company.com").assertIsDisplayed()
+    }
+
+    @Test
+    fun valueEnteredHidesHintAndKeepsFloatingLabel() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                var value by remember { mutableStateOf("user@skone.io") }
+                SKTextField(
+                    value = value,
+                    onValueChange = { value = it },
+                    fieldId = "email",
+                    label = "Email",
+                    hint = "name@company.com",
+                )
+            }
+        }
+        composeRule.onNodeWithText("Email").assertIsDisplayed()
+        composeRule.onNodeWithText("user@skone.io").assertIsDisplayed()
+        composeRule.onNodeWithText("name@company.com").assertDoesNotExist()
+    }
+
+    @Test
+    fun disabledFieldShowsLabel() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                SKTextField(
+                    value = "",
+                    onValueChange = {},
+                    fieldId = "disabled",
+                    label = "Email",
+                    hint = "name@company.com",
+                    enabled = false,
+                )
+            }
+        }
+        composeRule.onNodeWithText("Email").assertIsDisplayed()
+    }
+
+    @Test
+    fun readOnlyFieldShowsValue() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                SKTextField(
+                    value = "readonly@skone.io",
+                    onValueChange = {},
+                    fieldId = "readonly",
+                    label = "Email",
+                    readOnly = true,
+                )
+            }
+        }
+        composeRule.onNodeWithText("Email").assertIsDisplayed()
+        composeRule.onNodeWithText("readonly@skone.io").assertIsDisplayed()
+    }
+
+    @Test
+    fun showsSupportingText() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                SKTextField(
+                    value = "",
+                    onValueChange = {},
+                    fieldId = "support",
+                    label = "Email",
+                    supportingText = "We'll never share your email.",
+                )
+            }
+        }
+        composeRule.onNodeWithText("We'll never share your email.").assertIsDisplayed()
+    }
+
+    @Test
+    fun multiLineFieldShowsLabel() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                SKTextField(
+                    value = "Line one\nLine two",
+                    onValueChange = {},
+                    fieldId = "notes",
+                    label = "Notes",
+                    singleLine = false,
+                )
+            }
+        }
+        composeRule.onNodeWithText("Notes").assertIsDisplayed()
+        composeRule.onNodeWithText("Line one\nLine two").assertIsDisplayed()
     }
 
     @Test
@@ -73,6 +184,24 @@ class SKTextFieldComposeTest {
         }
         composeRule.onNodeWithContentDescription("Full name field").assertIsDisplayed()
         composeRule.onNodeWithTag("sktextfield_name").assertIsDisplayed()
+    }
+
+    @Test
+    fun errorStateKeepsFloatingLabel() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                SKTextField(
+                    value = "bad",
+                    onValueChange = {},
+                    fieldId = "email",
+                    label = "Email",
+                    supportingText = "Please enter a valid email address",
+                    accessibility = SKAccessibilityConfig(testTag = "email_error"),
+                )
+            }
+        }
+        composeRule.onNodeWithText("Email").assertIsDisplayed()
+        composeRule.onNodeWithText("Please enter a valid email address").assertIsDisplayed()
     }
 
     @Test

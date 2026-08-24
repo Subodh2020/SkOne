@@ -1,5 +1,4 @@
 pluginManagement {
-    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -21,17 +20,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "skone"
-
-include(":skone-bom")
-include(":skone-common")
-include(":skone-plugin")
-include(":skone-theme")
-include(":skone-core")
-include(":skone-ui")
-include(":skone-forms")
-include(":skone-compose")
-include(":skone-xml")
-include(":samples:skone-sample")
-include(":samples:skone-playground")
-include(":samples:skone-demo")
+rootProject.name = "skone-demo"

@@ -10,7 +10,7 @@ import org.gradle.api.Project
  */
 internal object SkonePublishing {
     const val DEFAULT_GROUP: String = "com.thesubodhgupta.skone"
-    const val DEFAULT_VERSION: String = "1.3.2-alpha01"
+    const val DEFAULT_VERSION: String = "1.3.2-alpha03"
 
     const val PROJECT_URL: String = "https://skone.thesubodhgupta.com"
     const val SCM_URL: String = "https://github.com/Subodh2020/SkOne"

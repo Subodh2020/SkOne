@@ -4,7 +4,21 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 
 **Not used:** deprecated OSSRH staging repositories.
 
-**Milestone:** 1.3.2 — publishing infrastructure. Central upload runs only when GitHub Actions `publish_central=true`.
+**Milestone:** 1.3.2 — publishing infrastructure. Maven Central releases are published via GitHub Actions (`publish_central=true`).
+
+**Release line:** `1.3.2-alpha03` — Improved SKTextField Compose UX with integrated floating-label outlined field.
+
+## Currently on Maven Central
+
+As of **`1.3.2-alpha02`**, these coordinates are published (until `1.3.2-alpha03` is released):
+
+| Artifact | Coordinates |
+|----------|-------------|
+| BOM | `com.thesubodhgupta.skone:skone-bom:1.3.2-alpha02` |
+| Common | `com.thesubodhgupta.skone:skone-common:1.3.2-alpha02` |
+| Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha02` |
+
+Other publishable modules (`skone-core`, `skone-ui`, `skone-forms`, `skone-xml`, `skone-theme`, `skone-plugin`) exist in the repository but are **not yet published** to Maven Central.
 
 ## Coordinates
 
@@ -19,11 +33,16 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 | Portal UI | https://central.sonatype.com/ |
 | Maven Central | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 
-Example dependency:
+Example dependency (currently published artifacts):
 
 ```kotlin
-implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha01")
-implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha01"))
+repositories {
+    mavenCentral()
+}
+
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
+implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha03")
+implementation("com.thesubodhgupta.skone:skone-common:1.3.2-alpha03")
 ```
 
 ## Architecture
@@ -61,7 +80,7 @@ Single source of truth: **`VERSION_NAME`** in `gradle.properties`.
 
 | Stage | Example |
 |-------|---------|
-| Alpha | `1.3.2-alpha01` |
+| Alpha | `1.3.2-alpha03` (current release line) |
 | Beta | `1.3.2-beta01` |
 | RC | `1.3.2-rc01` |
 | Stable | `1.3.2` |
@@ -156,7 +175,7 @@ Helpers:
 ./scripts/central-portal.sh wait <deploymentId> VALIDATED 900
 ./scripts/central-portal.sh publish <deploymentId>
 ./scripts/central-portal.sh wait <deploymentId> PUBLISHED 900
-./scripts/central-portal.sh verify-maven 1.3.2-alpha01 skone-bom
+./scripts/central-portal.sh verify-maven 1.3.2-alpha03 skone-bom
 ```
 
 ## Expected timelines
