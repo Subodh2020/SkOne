@@ -19,8 +19,7 @@ public fun SKColor.toArgb(): Int = argb
 /**
  * Converts [SKDp] to raw pixels for [view]'s display metrics.
  */
-public fun SKDp.toPx(view: View): Float =
-    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, view.resources.displayMetrics)
+public fun SKDp.toPx(view: View): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, view.resources.displayMetrics)
 
 /**
  * Resolved View-friendly appearance values.
@@ -40,14 +39,18 @@ public data class SKXmlResolvedAppearance(
 /**
  * Resolves [config] against [theme] into XML/View-ready values for [view].
  */
-public fun SKAppearanceConfig.resolve(theme: SKTheme, view: View): SKXmlResolvedAppearance {
+public fun SKAppearanceConfig.resolve(
+    theme: SKTheme,
+    view: View,
+): SKXmlResolvedAppearance {
     val colors = theme.tokens.colors
     val resolvedShape: SKShape = shape ?: theme.shapes.resolve(shapeStyle)
-    val radiusPx = when (resolvedShape) {
-        SKShape.Rectangle -> 0f
-        SKShape.Circle -> theme.tokens.radius.full.toPx(view)
-        is SKShape.Rounded -> resolvedShape.radius.toPx(view)
-    }
+    val radiusPx =
+        when (resolvedShape) {
+            SKShape.Rectangle -> 0f
+            SKShape.Circle -> theme.tokens.radius.full.toPx(view)
+            is SKShape.Rounded -> resolvedShape.radius.toPx(view)
+        }
     return SKXmlResolvedAppearance(
         containerColor = colors.color(containerColorRole).toArgb(),
         contentColor = colors.color(contentColorRole).toArgb(),

@@ -56,8 +56,7 @@ public object SKThemeHelper {
      * Returns the installed theme or throws if missing.
      */
     @JvmStatic
-    public fun require(): SKTheme =
-        installed ?: error("SKThemeHelper is not installed. Call SKThemeHelper.install(...) first.")
+    public fun require(): SKTheme = installed ?: error("SKThemeHelper is not installed. Call SKThemeHelper.install(...) first.")
 
     /**
      * Clears the installed theme. Intended for tests.
