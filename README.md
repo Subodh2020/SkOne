@@ -73,6 +73,7 @@ These modules are part of the SKOne monorepo. Only the Maven Central artifacts l
 
 ## Documentation
 
+- [API Reference](https://subodh2020.github.io/SkOne/api/) (hosted Dokka HTML)
 - [Publishing](docs/PUBLISHING.md)
 - [Playground](docs/PLAYGROUND.md)
 - [SDK API Guidelines](docs/SDK_API_GUIDELINES.md)

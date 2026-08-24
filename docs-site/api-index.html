@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SKOne API Reference</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">SKOne · @VERSION@</p>
+    <h1>API Reference</h1>
+    <p class="lede">Browsable Dokka documentation generated from SKOne library source. Select a module to explore packages, types, and public APIs.</p>
+  </header>
+  <nav class="toc">
+    <a href="../index.html">Docs Home</a>
+    <a href="index.html" aria-current="page">API Reference</a>
+  </nav>
+  <main>
+    <section>
+      <h2>Modules</h2>
+      <ul>
+        <li><a href="skone-common/index.html">Common</a> — results, errors, logging</li>
+        <li><a href="skone-plugin/index.html">Plugin</a> — plugin SPI</li>
+        <li><a href="skone-theme/index.html">Theme</a> — design tokens and theme engine</li>
+        <li><a href="skone-core/index.html">Core</a> — init, AI SPI, component framework</li>
+        <li><a href="skone-ui/index.html">UI</a> — shared widget contracts</li>
+        <li><a href="skone-forms/index.html">Forms</a> — form controller and engines</li>
+        <li><a href="skone-compose/index.html">Compose</a> — Compose bridges and widgets</li>
+        <li><a href="skone-xml/index.html">XML</a> — XML bridges and widgets</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Popular entry points</h2>
+      <ul>
+        <li><a href="skone-compose/skone-compose/io.skone.compose.widget/-s-k-text.html">SKText</a> (Compose)</li>
+        <li><a href="skone-compose/skone-compose/io.skone.compose.widget/-s-k-text-field.html">SKTextField</a> (Compose)</li>
+        <li><a href="skone-xml/skone-xml/io.skone.xml.widget/-s-k-text-view/-s-k-text-view.html">SKTextView</a> (XML)</li>
+        <li><a href="skone-xml/skone-xml/io.skone.xml.widget/-s-k-text-field-view/-s-k-text-field-view.html">SKTextFieldView</a> (XML)</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Regenerate locally</h2>
+      <pre><code>./gradlew dokkaHtmlAll
+./gradlew assembleDocsSite</code></pre>
+      <p>Preview: <code>cd build/docs-site &amp;&amp; python3 -m http.server 8080</code></p>
+    </section>
+  </main>
+  <footer>
+    <p>Generated from Dokka HTML for SKOne @VERSION@.</p>
+  </footer>
+</body>
+</html>
