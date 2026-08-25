@@ -10,15 +10,24 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 
 ## Currently on Maven Central
 
-As of **`1.3.2-alpha02`**, these coordinates are published (until `1.3.2-alpha03` is released):
+As of **`1.3.2-alpha03`**, these artifacts are published:
 
 | Artifact | Coordinates |
 |----------|-------------|
-| BOM | `com.thesubodhgupta.skone:skone-bom:1.3.2-alpha02` |
-| Common | `com.thesubodhgupta.skone:skone-common:1.3.2-alpha02` |
-| Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha02` |
+| BOM | `com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03` |
+| Common | `com.thesubodhgupta.skone:skone-common:1.3.2-alpha03` |
+| Plugin | `com.thesubodhgupta.skone:skone-plugin:1.3.2-alpha03` |
+| Theme | `com.thesubodhgupta.skone:skone-theme:1.3.2-alpha03` |
+| Core | `com.thesubodhgupta.skone:skone-core:1.3.2-alpha03` |
+| UI | `com.thesubodhgupta.skone:skone-ui:1.3.2-alpha03` |
+| Forms | `com.thesubodhgupta.skone:skone-forms:1.3.2-alpha03` |
+| Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha03` |
+| XML | `com.thesubodhgupta.skone:skone-xml:1.3.2-alpha03` |
 
-Other publishable modules (`skone-core`, `skone-ui`, `skone-forms`, `skone-xml`, `skone-theme`, `skone-plugin`) exist in the repository but are **not yet published** to Maven Central.
+**Recommended consumer dependencies** (see [Getting Started — Choosing SKOne dependencies](GETTING_STARTED.md#choosing-skone-dependencies)):
+
+- **Compose:** `skone-bom` + `skone-compose`
+- **XML/View:** `skone-bom` + `skone-xml`
 
 ## Coordinates
 
@@ -33,7 +42,7 @@ Other publishable modules (`skone-core`, `skone-ui`, `skone-forms`, `skone-xml`,
 | Portal UI | https://central.sonatype.com/ |
 | Maven Central | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 
-Example dependency (currently published artifacts):
+Example dependency (Compose — recommended):
 
 ```kotlin
 repositories {
@@ -41,8 +50,14 @@ repositories {
 }
 
 implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
-implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha03")
-implementation("com.thesubodhgupta.skone:skone-common:1.3.2-alpha03")
+implementation("com.thesubodhgupta.skone:skone-compose")
+```
+
+Example dependency (XML/View):
+
+```kotlin
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
+implementation("com.thesubodhgupta.skone:skone-xml")
 ```
 
 ## Architecture

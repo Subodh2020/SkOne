@@ -1,3 +1,5 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.compose.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme

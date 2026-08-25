@@ -1,5 +1,8 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.plugin
 
+import io.skone.common.annotation.SKInternal
 import io.skone.common.log.SKLog
 import java.util.concurrent.ConcurrentHashMap
 
@@ -33,7 +36,10 @@ public interface SKPluginRegistry {
 
 /**
  * Thread-safe in-memory [SKPluginRegistry] with no reflection.
+ *
+ * **Internal implementation** — used by [io.skone.SKOne] during initialization.
  */
+@SKInternal
 public class SKInMemoryPluginRegistry(
     private val contextFactory: () -> SKPluginContext,
 ) : SKPluginRegistry {

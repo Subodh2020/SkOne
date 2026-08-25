@@ -1,5 +1,6 @@
 package io.skone.component.framework.validation
 
+import io.skone.common.annotation.SKInternal
 import io.skone.component.validation.SKValidationConfig
 import io.skone.component.validation.SKValidationError
 import io.skone.component.validation.SKValidationResult
@@ -34,7 +35,10 @@ public interface SKValidationManager {
 
 /**
  * Default [SKValidationManager] implementation.
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultValidationManager : SKValidationManager {
     private data class Entry(
         val config: SKValidationConfig,

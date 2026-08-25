@@ -1,5 +1,6 @@
 package io.skone.forms.focus
 
+import io.skone.common.annotation.SKInternal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +39,10 @@ public interface SKFocusChain {
 
 /**
  * Default [SKFocusChain].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultFocusChain : SKFocusChain {
     private val _order = CopyOnWriteArrayList<String>()
     private val _focusedId = MutableStateFlow<String?>(null)

@@ -1,5 +1,6 @@
 package io.skone.component.framework.dsl
 
+import io.skone.common.annotation.SKExperimental
 import io.skone.component.SKAnalyticsConfig
 import io.skone.component.SKComponentConfig
 import io.skone.component.accessibility.SKAccessibilityConfig
@@ -14,7 +15,10 @@ import io.skone.theme.state.SKComponentState
  * Fluent builder for [SKComponentConfig] (+ optional layout metadata).
  *
  * This DSL does **not** create widgets — only configuration used by future widgets.
+ *
+ * **Experimental** — DSL APIs may change before stabilization.
  */
+@SKExperimental
 public class SKComponentBuilder {
     public var state: SKComponentState = SKComponentState.Default
     public var appearance: SKAppearanceConfig = SKAppearanceConfig.Primary
@@ -65,7 +69,10 @@ public class SKComponentBuilder {
 
 /**
  * Result of the component DSL: config + layout, still not a widget.
+ *
+ * **Experimental** — DSL APIs may change before stabilization.
  */
+@SKExperimental
 public data class SKComponentSpec(
     public val config: SKComponentConfig,
     public val layout: SKLayoutSpec = SKLayoutSpec.Wrap,
@@ -83,12 +90,18 @@ public data class SKComponentSpec(
  *     layout = SKLayoutSpec.FillWidth
  * }
  * ```
+ *
+ * **Experimental** — DSL APIs may change before stabilization.
  */
+@SKExperimental
 public fun skComponent(block: SKComponentBuilder.() -> Unit): SKComponentSpec =
     SKComponentBuilder().apply(block).build()
 
 /**
  * Builds only an [SKComponentConfig].
+ *
+ * **Experimental** — DSL APIs may change before stabilization.
  */
+@SKExperimental
 public fun skComponentConfig(block: SKComponentBuilder.() -> Unit): SKComponentConfig =
     SKComponentBuilder().apply(block).buildConfig()

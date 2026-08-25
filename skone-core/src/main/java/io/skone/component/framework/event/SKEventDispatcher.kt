@@ -1,5 +1,6 @@
 package io.skone.component.framework.event
 
+import io.skone.common.annotation.SKInternal
 import io.skone.component.framework.SKDisposable
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -85,7 +86,10 @@ public interface SKEventDispatcher {
 
 /**
  * Default thread-safe [SKEventDispatcher].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultEventDispatcher : SKEventDispatcher {
     private data class Sub(
         val componentId: String?,

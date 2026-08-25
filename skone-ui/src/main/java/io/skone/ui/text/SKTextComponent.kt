@@ -1,3 +1,5 @@
+@file:OptIn(io.skone.common.annotation.SKExperimental::class)
+
 package io.skone.ui.text
 
 import io.skone.component.SKAnalyticsConfig

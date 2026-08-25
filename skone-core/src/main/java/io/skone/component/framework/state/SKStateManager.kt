@@ -1,5 +1,6 @@
 package io.skone.component.framework.state
 
+import io.skone.common.annotation.SKInternal
 import io.skone.theme.state.SKComponentState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +29,10 @@ public interface SKStateManager {
 
 /**
  * Default in-memory [SKStateManager].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultStateManager : SKStateManager {
     private val states = ConcurrentHashMap<String, MutableStateFlow<SKComponentState>>()
 

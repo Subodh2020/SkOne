@@ -1,3 +1,5 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.component.framework
 
 import io.skone.common.log.SKLogger

@@ -1,5 +1,6 @@
 package io.skone.forms.validation
 
+import io.skone.common.annotation.SKInternal
 import io.skone.component.validation.SKValidationError
 import io.skone.component.validation.SKValidationResult
 import io.skone.forms.field.SKFieldRegistry
@@ -42,7 +43,10 @@ public data class SKFormValidationResult(
 
 /**
  * Default [SKValidationEngine].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultValidationEngine : SKValidationEngine {
     override fun validateField(
         field: SKFormField,

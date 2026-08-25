@@ -1,5 +1,7 @@
 package io.skone.forms.schema
 
+import io.skone.common.annotation.SKExperimental
+
 /**
  * Dynamic form model interfaces shaped like a JSON Schema subset.
  *
@@ -9,7 +11,10 @@ package io.skone.forms.schema
 
 /**
  * Root form schema.
+ *
+ * **Experimental** — schema interfaces may change before stabilization.
  */
+@SKExperimental
 public interface SKFormSchema {
     public val id: String
     public val title: String?
@@ -20,7 +25,10 @@ public interface SKFormSchema {
 
 /**
  * Single field schema entry.
+ *
+ * **Experimental** — schema interfaces may change before stabilization.
  */
+@SKExperimental
 public interface SKFormFieldSchema {
     public val id: String
     public val type: SKFormFieldType
@@ -36,7 +44,10 @@ public interface SKFormFieldSchema {
 
 /**
  * Supported logical field types for dynamic forms.
+ *
+ * **Experimental** — schema interfaces may change before stabilization.
  */
+@SKExperimental
 public enum class SKFormFieldType {
     String,
     Number,
@@ -56,7 +67,10 @@ public enum class SKFormFieldType {
 
 /**
  * Declarative validation descriptor (schema-level).
+ *
+ * **Experimental** — schema interfaces may change before stabilization.
  */
+@SKExperimental
 public interface SKFormValidationSchema {
     public val type: String
     public val message: String?
@@ -65,7 +79,10 @@ public interface SKFormValidationSchema {
 
 /**
  * AI assist descriptor on a schema field.
+ *
+ * **Experimental** — schema interfaces may change before stabilization.
  */
+@SKExperimental
 public interface SKFormFieldAISchema {
     public val enabled: Boolean
     public val capabilities: Set<String>
@@ -75,7 +92,10 @@ public interface SKFormFieldAISchema {
 /**
  * Factory bridge: apps convert [SKFormSchema] → registered [io.skone.forms.field.SKFormField]s.
  * Implementation arrives with production form widgets / JSON module.
+ *
+ * **Experimental** — schema interfaces may change before stabilization.
  */
+@SKExperimental
 public interface SKFormSchemaBinder {
     public fun bind(schema: SKFormSchema): List<io.skone.forms.field.SKFormField>
 }

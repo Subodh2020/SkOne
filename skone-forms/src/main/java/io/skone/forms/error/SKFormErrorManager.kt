@@ -1,5 +1,6 @@
 package io.skone.forms.error
 
+import io.skone.common.annotation.SKInternal
 import io.skone.component.validation.SKValidationError
 import io.skone.component.validation.SKValidationResult
 import io.skone.forms.validation.SKFormValidationResult
@@ -29,7 +30,10 @@ public interface SKFormErrorManager {
 
 /**
  * Default in-memory [SKFormErrorManager].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultFormErrorManager : SKFormErrorManager {
     private val _errors = MutableStateFlow<Map<String, List<SKValidationError>>>(emptyMap())
     override val errors: StateFlow<Map<String, List<SKValidationError>>> = _errors.asStateFlow()

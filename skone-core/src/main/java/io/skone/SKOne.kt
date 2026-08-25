@@ -1,9 +1,12 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone
 
 import io.skone.ai.SKAIConfig
 import io.skone.ai.SKAIProvider
 import io.skone.ai.SKAIRequest
 import io.skone.ai.SKAIResponse
+import io.skone.common.annotation.SKInternal
 import io.skone.common.error.SKError
 import io.skone.common.log.SKLog
 import io.skone.common.log.SKLogger
@@ -139,9 +142,12 @@ public object SKOne {
     }
 
     /**
-     * Resets SDK state. Intended for unit tests only.
+     * Resets SDK state.
+     *
+     * **Internal test hook** — not part of the application SDK.
      */
     @JvmStatic
+    @SKInternal
     public fun resetForTest() {
         registryRef.get()?.all()?.forEach { plugin ->
             runCatching { registryRef.get()?.unregister(plugin.id) }

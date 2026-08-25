@@ -1,4 +1,8 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.common.log
+
+import io.skone.common.annotation.SKInternal
 
 /**
  * Logging SPI for SKOne.
@@ -36,7 +40,11 @@ public object SKNoOpLogger : SKLogger {
 
 /**
  * Default logger that writes to Android's [android.util.Log].
+ *
+ * **Internal implementation** — not intended for application use. Install a custom
+ * [SKLogger] via [io.skone.SKOneConfig] instead of referencing this type directly.
  */
+@SKInternal
 public object SKDefaultLogger : SKLogger {
     override fun v(tag: String, message: String, throwable: Throwable?) {
         if (throwable != null) {
@@ -88,8 +96,12 @@ public object SKLog {
     private var delegate: SKLogger = SKDefaultLogger
 
     /**
-     * Installs the active logger. Intended for SDK internals and tests.
+     * Installs the active logger.
+     *
+     * **Internal** — used by [io.skone.SKOne] during initialization. Applications should
+     * pass a logger through [io.skone.SKOneConfig], not call this method directly.
      */
+    @SKInternal
     public fun install(logger: SKLogger) {
         delegate = logger
     }
@@ -120,8 +132,11 @@ public object SKLog {
     }
 
     /**
-     * Resets to [SKDefaultLogger]. Visible for tests.
+     * Resets to [SKDefaultLogger].
+     *
+     * **Internal test hook** — not part of the application SDK.
      */
+    @SKInternal
     public fun resetForTest() {
         delegate = SKDefaultLogger
     }

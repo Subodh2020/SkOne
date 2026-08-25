@@ -1,5 +1,6 @@
 package io.skone.forms.field
 
+import io.skone.common.annotation.SKInternal
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -25,7 +26,10 @@ public interface SKFieldRegistry {
 
 /**
  * Thread-safe in-memory [SKFieldRegistry].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultFieldRegistry : SKFieldRegistry {
     private val fields = ConcurrentHashMap<String, SKFormField>()
     private val states = ConcurrentHashMap<String, SKFieldState>()

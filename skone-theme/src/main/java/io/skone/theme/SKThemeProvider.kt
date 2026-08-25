@@ -1,5 +1,6 @@
 package io.skone.theme
 
+import io.skone.common.annotation.SKInternal
 import io.skone.theme.tokens.SKThemeTokens
 
 /**
@@ -31,9 +32,13 @@ public interface SKThemeProvider {
 /**
  * Default provider using [SKThemes.Light] / [SKThemes.Dark], with optional overrides.
  *
+ * **Internal default implementation** — applications should pass a custom [SKThemeProvider]
+ * or rely on the default through [io.skone.compose.theme.SKTheme] without referencing this type.
+ *
  * @property lightTheme Theme used for light / system-light.
  * @property darkTheme Theme used for dark / system-dark.
  */
+@SKInternal
 public class SKDefaultThemeProvider(
     private val lightTheme: SKTheme = SKThemes.Light,
     private val darkTheme: SKTheme = SKThemes.Dark,

@@ -1,5 +1,6 @@
 package io.skone.component.framework.analytics
 
+import io.skone.common.annotation.SKInternal
 import io.skone.component.SKAnalyticsConfig
 import io.skone.component.framework.event.SKComponentEvent
 
@@ -50,7 +51,10 @@ public object SKNoOpAnalyticsHook : SKAnalyticsHook {
 
 /**
  * Collecting hook for tests.
+ *
+ * **Internal test utility** — not intended for application use.
  */
+@SKInternal
 public class SKRecordingAnalyticsHook : SKAnalyticsHook {
     public data class Entry(
         public val name: String,

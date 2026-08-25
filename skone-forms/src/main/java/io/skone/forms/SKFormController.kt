@@ -1,3 +1,5 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.forms
 
 import io.skone.component.validation.SKValidationResult

@@ -1,8 +1,11 @@
+@file:OptIn(io.skone.common.annotation.SKExperimental::class)
+
 package io.skone.xml.component
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import io.skone.common.annotation.SKExperimental
 import io.skone.component.framework.SKComponent
 import io.skone.component.framework.SKComponentRuntime
 import io.skone.component.framework.base.SKBaseComponent
@@ -20,7 +23,10 @@ import io.skone.xml.theme.toPx
  * @param context Android context.
  * @param attrs Optional attribute set.
  * @param defStyleAttr Default style attribute.
+ *
+ * **Experimental** — custom XML component base; may change before stabilization.
  */
+@SKExperimental
 public abstract class SKXmlComponent
     @JvmOverloads
     constructor(
@@ -99,7 +105,10 @@ public abstract class SKXmlComponent
  * Convenience host that wraps a pre-built [SKBaseComponent] and [SKComponentSpec].
  *
  * Still not a production widget — useful for tests and custom View composition.
+ *
+ * **Experimental** — custom XML component base; may change before stabilization.
  */
+@SKExperimental
 public open class SKXmlComponentHost
     @JvmOverloads
     constructor(

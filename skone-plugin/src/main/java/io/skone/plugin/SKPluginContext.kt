@@ -1,5 +1,6 @@
 package io.skone.plugin
 
+import io.skone.common.annotation.SKInternal
 import io.skone.common.log.SKLogger
 import kotlin.reflect.KClass
 
@@ -26,7 +27,10 @@ public inline fun <reified T : Any> SKPluginContext.getDependency(): T? =
 
 /**
  * Default [SKPluginContext] backed by an in-memory dependency map.
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultPluginContext(
     override val logger: SKLogger,
     private val dependencies: Map<KClass<*>, Any> = emptyMap(),

@@ -16,50 +16,59 @@ repositories {
 
 dependencies {
     implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
-    implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha03")
+    implementation("com.thesubodhgupta.skone:skone-compose")
 }
 ```
 
 Group: `com.thesubodhgupta.skone` · Kotlin packages: `io.skone.*`
 
-> Maven Central may still list `1.3.2-alpha02` until the publish workflow completes for `1.3.2-alpha03`.
+See [Getting Started](docs/GETTING_STARTED.md#choosing-skone-dependencies) for Compose vs XML dependency choices and transitive modules.
 
 ## Maven Central
 
 | | |
 |---|---|
 | **Group** | `com.thesubodhgupta.skone` |
-| **Latest (release line)** | `1.3.2-alpha03` |
+| **Latest** | `1.3.2-alpha03` |
 | **Browse** | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 | **Portal** | https://central.sonatype.com/ |
 
-**Target artifacts (`1.3.2-alpha03`):**
+**Published artifacts (`1.3.2-alpha03`):**
 
-- `com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03`
-- `com.thesubodhgupta.skone:skone-common:1.3.2-alpha03`
-- `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha03`
+| Artifact | Typical use |
+|----------|-------------|
+| `skone-bom` | Version alignment (declare first) |
+| `skone-compose` | **Recommended Compose entry** (`SKText`, `SKTextField`, `SKTheme`) |
+| `skone-xml` | **Recommended XML/View entry** (`SKTextView`, `SKTextFieldView`, `SKThemeHelper`) |
+| `skone-common` | Results, errors, logging (advanced / headless) |
+| `skone-plugin` | Plugin SPI (advanced / extension) |
+| `skone-theme` | Design tokens (advanced; usually transitive) |
+| `skone-core` | SDK init, component framework (advanced; usually transitive) |
+| `skone-ui` | Widget contracts (usually transitive) |
+| `skone-forms` | Form controller & validation (advanced; transitive via Compose/XML) |
 
-Additional library modules exist in this repository and are configured for publishing, but are **not yet available** on Maven Central. Use the published coordinates above until further modules are released.
+Most Compose apps only need **`skone-bom` + `skone-compose`**. Lower-level modules are published for advanced use and are pulled transitively when needed.
 
 See [Publishing Guide](docs/PUBLISHING.md) for maintainer workflows.
 
 ## Repository modules
 
-These modules are part of the SKOne monorepo. Only the Maven Central artifacts listed above are currently published for external consumption.
+These modules are part of the SKOne monorepo. All library artifacts below are published to Maven Central at **`1.3.2-alpha03`**.
 
-| Module | Description | On Maven Central |
-|--------|-------------|------------------|
-| `skone-bom` | Bill of Materials | Yes (`1.3.2-alpha03`) |
-| `skone-common` | Results, errors, logging | Yes (`1.3.2-alpha03`) |
-| `skone-compose` | Compose bridges + widgets | Yes (`1.3.2-alpha03`) |
-| `skone-plugin` | Plugin SPI | Repository only |
-| `skone-theme` | Design tokens + theme engine | Repository only |
-| `skone-core` | Init, AI SPI, component framework | Repository only |
-| `skone-ui` | Shared widget contracts | Repository only |
-| `skone-forms` | Form controller & engines | Repository only |
-| `skone-xml` | XML bridges + widgets | Repository only |
+| Module | Description | Maven Central |
+|--------|-------------|---------------|
+| `skone-bom` | Bill of Materials | Yes |
+| `skone-common` | Results, errors, logging | Yes |
+| `skone-plugin` | Plugin SPI | Yes |
+| `skone-theme` | Design tokens + theme engine | Yes |
+| `skone-core` | Init, AI SPI, component framework | Yes |
+| `skone-ui` | Shared widget contracts | Yes |
+| `skone-forms` | Form controller & engines | Yes |
+| `skone-compose` | Compose bridges + widgets | Yes |
+| `skone-xml` | XML bridges + widgets | Yes |
 | `samples:skone-sample` | Minimal integration sample | Not published |
 | `samples:skone-playground` | Official developer showcase | Not published |
+| `samples:skone-demo` | External Maven Central consumer | Not published |
 
 ## Quick commands
 
@@ -73,6 +82,7 @@ These modules are part of the SKOne monorepo. Only the Maven Central artifacts l
 
 ## Documentation
 
+- [Getting Started](docs/GETTING_STARTED.md)
 - [API Reference](https://subodh2020.github.io/SkOne/api/) (hosted Dokka HTML)
 - [Publishing](docs/PUBLISHING.md)
 - [Playground](docs/PLAYGROUND.md)

@@ -1,6 +1,7 @@
 package io.skone.component.framework.base
 
 import io.skone.SKOne
+import io.skone.common.annotation.SKExperimental
 import io.skone.ai.SKAIRequest
 import io.skone.ai.SKAIResponse
 import io.skone.common.result.SKResult
@@ -30,7 +31,10 @@ import java.util.concurrent.atomic.AtomicReference
  * Abstract base implementing [SKComponent] lifecycle and runtime wiring.
  *
  * UI bases (Compose/XML) and future widgets extend this — it contains **no UI**.
+ *
+ * **Experimental** — component authoring APIs may change before stabilization.
  */
+@SKExperimental
 public abstract class SKBaseComponent(
     id: String,
     componentType: String,
@@ -111,7 +115,10 @@ public abstract class SKBaseComponent(
 
 /**
  * Base for interactive components.
+ *
+ * **Experimental** — component authoring APIs may change before stabilization.
  */
+@SKExperimental
 public abstract class SKBaseInteractiveComponent(
     id: String,
     componentType: String,
@@ -151,7 +158,10 @@ public abstract class SKBaseInteractiveComponent(
 
 /**
  * Base for input components.
+ *
+ * **Experimental** — component authoring APIs may change before stabilization.
  */
+@SKExperimental
 public abstract class SKBaseInputComponent<T>(
     id: String,
     componentType: String,
@@ -207,7 +217,10 @@ public abstract class SKBaseInputComponent<T>(
 
 /**
  * Base for selectable components.
+ *
+ * **Experimental** — component authoring APIs may change before stabilization.
  */
+@SKExperimental
 public abstract class SKBaseSelectableComponent<T>(
     id: String,
     componentType: String,
@@ -257,7 +270,10 @@ public abstract class SKBaseSelectableComponent<T>(
 
 /**
  * Base for navigation components.
+ *
+ * **Experimental** — component authoring APIs may change before stabilization.
  */
+@SKExperimental
 public abstract class SKBaseNavigationComponent(
     id: String,
     componentType: String,
@@ -289,7 +305,10 @@ public abstract class SKBaseNavigationComponent(
  * Mixin-style base that adds [SKAIComponent] on top of [SKBaseComponent].
  *
  * Widgets that need AI can extend this or implement [SKAIComponent] separately.
+ *
+ * **Experimental** — component authoring APIs may change before stabilization.
  */
+@SKExperimental
 public abstract class SKBaseAIComponent(
     id: String,
     componentType: String,

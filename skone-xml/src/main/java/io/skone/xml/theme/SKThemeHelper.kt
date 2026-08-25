@@ -1,3 +1,8 @@
+@file:OptIn(
+    io.skone.common.annotation.SKExperimental::class,
+    io.skone.common.annotation.SKInternal::class,
+)
+
 package io.skone.xml.theme
 
 import android.content.Context

@@ -1,5 +1,6 @@
 package io.skone.component.framework.focus
 
+import io.skone.common.annotation.SKInternal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +24,10 @@ public interface SKFocusManager {
 
 /**
  * Default in-memory [SKFocusManager].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultFocusManager : SKFocusManager {
     private val _focusedId = MutableStateFlow<String?>(null)
     override val focusedId: StateFlow<String?> = _focusedId.asStateFlow()

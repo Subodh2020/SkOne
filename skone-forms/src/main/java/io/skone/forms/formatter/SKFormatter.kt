@@ -1,5 +1,7 @@
 package io.skone.forms.formatter
 
+import io.skone.common.annotation.SKInternal
+
 /**
  * Converts between model values and display strings for form fields.
  *
@@ -48,7 +50,10 @@ public interface SKFormatterEngine {
 
 /**
  * Default [SKFormatterEngine].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultFormatterEngine : SKFormatterEngine {
     override fun format(formatter: SKFormatter?, value: Any?): String =
         formatter?.format(value) ?: value?.toString().orEmpty()

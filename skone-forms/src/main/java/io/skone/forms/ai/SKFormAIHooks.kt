@@ -1,6 +1,7 @@
 package io.skone.forms.ai
 
 import io.skone.SKOne
+import io.skone.common.annotation.SKInternal
 import io.skone.ai.SKAICapability
 import io.skone.ai.SKAIRequest
 import io.skone.ai.SKAIResponse
@@ -42,7 +43,10 @@ public interface SKFormAIHooks {
 
 /**
  * Default [SKFormAIHooks] using [SKOne].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultFormAIHooks : SKFormAIHooks {
     override suspend fun assistField(
         field: SKFormField,

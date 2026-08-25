@@ -1,5 +1,7 @@
 package io.skone.forms.mask
 
+import io.skone.common.annotation.SKInternal
+
 /**
  * Input mask applied as the user types.
  *
@@ -38,7 +40,10 @@ public interface SKInputMaskEngine {
 
 /**
  * Default [SKInputMaskEngine].
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultInputMaskEngine : SKInputMaskEngine {
     override fun apply(mask: SKInputMask, rawInput: String): SKMaskedValue {
         val rawChars = rawInput.filter { !it.isWhitespace() }.toMutableList()

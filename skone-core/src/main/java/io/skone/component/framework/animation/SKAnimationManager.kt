@@ -1,5 +1,6 @@
 package io.skone.component.framework.animation
 
+import io.skone.common.annotation.SKInternal
 import io.skone.theme.tokens.SKDuration
 import io.skone.theme.tokens.SKEasing
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -42,7 +43,10 @@ public interface SKAnimationManager {
 
 /**
  * Default [SKAnimationManager] backed by a shared flow (replay = 0, extraBuffer = 16).
+ *
+ * **Internal implementation** — not intended for application use.
  */
+@SKInternal
 public class SKDefaultAnimationManager : SKAnimationManager {
     private val _requests = MutableSharedFlow<SKAnimationRequest>(
         extraBufferCapacity = 16,
