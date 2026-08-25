@@ -6,11 +6,13 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 
 **Milestone:** 1.3.2 — publishing infrastructure. Maven Central releases are published via GitHub Actions (`publish_central=true`).
 
-**Release line:** `1.3.2-alpha03` — Improved SKTextField Compose UX with integrated floating-label outlined field.
+**Release line (prepared):** `1.3.2-alpha04` — API boundary stabilization, contract tests, docs. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+
+**Last published on Maven Central:** `1.3.2-alpha03`. Bump consumer / demo coordinates to `1.3.2-alpha04` only after Central availability.
 
 ## Currently on Maven Central
 
-As of **`1.3.2-alpha03`**, these artifacts are published:
+As of **`1.3.2-alpha03`** (last published), these artifacts are available:
 
 | Artifact | Coordinates |
 |----------|-------------|
@@ -23,6 +25,8 @@ As of **`1.3.2-alpha03`**, these artifacts are published:
 | Forms | `com.thesubodhgupta.skone:skone-forms:1.3.2-alpha03` |
 | Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha03` |
 | XML | `com.thesubodhgupta.skone:skone-xml:1.3.2-alpha03` |
+
+**Prepared next release coordinates (`1.3.2-alpha04`):** same artifacts with version `1.3.2-alpha04` after publish.
 
 **Recommended consumer dependencies** (see [Getting Started — Choosing SKOne dependencies](GETTING_STARTED.md#choosing-skone-dependencies)):
 
@@ -49,14 +53,14 @@ repositories {
     mavenCentral()
 }
 
-implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha04"))
 implementation("com.thesubodhgupta.skone:skone-compose")
 ```
 
 Example dependency (XML/View):
 
 ```kotlin
-implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha04"))
 implementation("com.thesubodhgupta.skone:skone-xml")
 ```
 
@@ -95,7 +99,7 @@ Single source of truth: **`VERSION_NAME`** in `gradle.properties`.
 
 | Stage | Example |
 |-------|---------|
-| Alpha | `1.3.2-alpha03` (current release line) |
+| Alpha | `1.3.2-alpha04` (prepared release line) |
 | Beta | `1.3.2-beta01` |
 | RC | `1.3.2-rc01` |
 | Stable | `1.3.2` |
@@ -190,7 +194,7 @@ Helpers:
 ./scripts/central-portal.sh wait <deploymentId> VALIDATED 900
 ./scripts/central-portal.sh publish <deploymentId>
 ./scripts/central-portal.sh wait <deploymentId> PUBLISHED 900
-./scripts/central-portal.sh verify-maven 1.3.2-alpha03 skone-bom
+./scripts/central-portal.sh verify-maven 1.3.2-alpha04 skone-bom
 ```
 
 ## Expected timelines

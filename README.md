@@ -3,9 +3,11 @@
 **SKOne** is an open-source, enterprise-grade Android developer platform — modular, Kotlin-first, AI-ready, with Jetpack Compose and XML support.
 
 **Repository:** https://github.com/Subodh2020/SkOne  
-**Release version:** **1.3.2-alpha03** (publish to Maven Central via GitHub Actions)
+**Release version:** **1.3.2-alpha04** (publish to Maven Central via GitHub Actions)
 
-**1.3.2-alpha03** — Improved SKTextField Compose UX with integrated floating-label outlined field.
+**1.3.2-alpha04** — API boundary stabilization (`@SKInternal` / `@SKExperimental`), contract tests, and docs. See [Release Notes](docs/RELEASE_NOTES.md).
+
+Stable public APIs remain usable without `@OptIn`. Direct use of newly `@SKInternal` implementation types may need `@OptIn(SKInternal::class)`.
 
 ## Install from Maven Central
 
@@ -15,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha04"))
     implementation("com.thesubodhgupta.skone:skone-compose")
 }
 ```
@@ -29,11 +31,12 @@ See [Getting Started](docs/GETTING_STARTED.md#choosing-skone-dependencies) for C
 | | |
 |---|---|
 | **Group** | `com.thesubodhgupta.skone` |
-| **Latest** | `1.3.2-alpha03` |
+| **Latest (Central)** | `1.3.2-alpha03` (until `1.3.2-alpha04` is published) |
+| **Prepared release** | `1.3.2-alpha04` |
 | **Browse** | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 | **Portal** | https://central.sonatype.com/ |
 
-**Published artifacts (`1.3.2-alpha03`):**
+**Artifacts (`1.3.2-alpha04` coordinates after publish):**
 
 | Artifact | Typical use |
 |----------|-------------|
@@ -53,7 +56,7 @@ See [Publishing Guide](docs/PUBLISHING.md) for maintainer workflows.
 
 ## Repository modules
 
-These modules are part of the SKOne monorepo. All library artifacts below are published to Maven Central at **`1.3.2-alpha03`**.
+These modules are part of the SKOne monorepo. Library artifacts publish to Maven Central at **`1.3.2-alpha04`** (after release).
 
 | Module | Description | Maven Central |
 |--------|-------------|---------------|
