@@ -6,11 +6,9 @@ It intentionally does **not** depend on SKOne source modules in this repository.
 
 ## Current version
 
-`1.3.2-alpha03` (published on Maven Central)
+`1.3.2-alpha04` (published on Maven Central)
 
-**Release note:** Improved SKTextField Compose UX with integrated floating-label outlined field.
-
-After **`1.3.2-alpha04`** is available on Maven Central, bump this demo’s BOM / Compose coordinates (and `SKONE_VERSION` in `DemoScreen.kt`) to verify the new release. Do not depend on an unpublished version.
+**Release note:** API boundary stabilization (`@SKInternal` / `@SKExperimental`), contract tests, and docs. See [Release Notes](../../docs/RELEASE_NOTES.md).
 
 ## Maven coordinates
 
@@ -24,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha03"))
-    implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha03")
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha04"))
+    implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha04")
 }
 ```
 

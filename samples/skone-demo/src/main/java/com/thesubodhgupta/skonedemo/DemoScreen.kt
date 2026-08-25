@@ -28,7 +28,7 @@ import io.skone.theme.tokens.SKTypographyRole
 import io.skone.ui.field.SKImeAction
 import io.skone.ui.field.SKKeyboardType
 
-private const val SKONE_VERSION = "1.3.2-alpha03"
+private const val SKONE_VERSION = "1.3.2-alpha04"
 
 @Composable
 fun DemoScreen(modifier: Modifier = Modifier) {
