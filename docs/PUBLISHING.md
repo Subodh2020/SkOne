@@ -6,13 +6,13 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 
 **Milestone:** 1.3.2 — publishing infrastructure. Maven Central releases are published via GitHub Actions (`publish_central=true`).
 
-**Release line:** `1.3.2-alpha04` — API boundary stabilization, contract tests, docs. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+**Release line (prepared):** `1.3.2-alpha05` — Compose `SKTextField` IME Next/Previous → actual UI focus. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
-**Current published version on Maven Central:** `1.3.2-alpha04`.
+**Last published on Maven Central:** `1.3.2-alpha04`. Keep consumer / demo coordinates on `1.3.2-alpha04` until `1.3.2-alpha05` is available on Central.
 
 ## Currently on Maven Central
 
-As of **`1.3.2-alpha04`** (published), these artifacts are available:
+As of **`1.3.2-alpha04`** (last published), these artifacts are available:
 
 | Artifact | Coordinates |
 |----------|-------------|
@@ -25,6 +25,8 @@ As of **`1.3.2-alpha04`** (published), these artifacts are available:
 | Forms | `com.thesubodhgupta.skone:skone-forms:1.3.2-alpha04` |
 | Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha04` |
 | XML | `com.thesubodhgupta.skone:skone-xml:1.3.2-alpha04` |
+
+**Prepared next release coordinates (`1.3.2-alpha05`):** same artifacts with version `1.3.2-alpha05` after publish.
 
 **Recommended consumer dependencies** (see [Getting Started — Choosing SKOne dependencies](GETTING_STARTED.md#choosing-skone-dependencies)):
 
@@ -51,14 +53,14 @@ repositories {
     mavenCentral()
 }
 
-implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha04"))
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
 implementation("com.thesubodhgupta.skone:skone-compose")
 ```
 
 Example dependency (XML/View):
 
 ```kotlin
-implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha04"))
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
 implementation("com.thesubodhgupta.skone:skone-xml")
 ```
 
@@ -97,7 +99,7 @@ Single source of truth: **`VERSION_NAME`** in `gradle.properties`.
 
 | Stage | Example |
 |-------|---------|
-| Alpha | `1.3.2-alpha04` (current published release) |
+| Alpha | `1.3.2-alpha05` (prepared release line) |
 | Beta | `1.3.2-beta01` |
 | RC | `1.3.2-rc01` |
 | Stable | `1.3.2` |
@@ -192,7 +194,7 @@ Helpers:
 ./scripts/central-portal.sh wait <deploymentId> VALIDATED 900
 ./scripts/central-portal.sh publish <deploymentId>
 ./scripts/central-portal.sh wait <deploymentId> PUBLISHED 900
-./scripts/central-portal.sh verify-maven 1.3.2-alpha04 skone-bom
+./scripts/central-portal.sh verify-maven 1.3.2-alpha05 skone-bom
 ```
 
 ## Expected timelines

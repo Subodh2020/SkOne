@@ -1,5 +1,31 @@
 # SKOne Release Notes
 
+## 1.3.2-alpha05
+
+P1 Compose focus fix. **No public API change.**
+
+### Highlights
+
+- **IME Next → actual Compose focus:** `SKTextField` with `imeAction = Next` still updates `SKFormController` / `SKFocusChain`, and now also moves UI focus to the next registered field via a per-field `FocusRequester`
+- The same `focusedId` → `FocusRequester` bridge also covers **Previous** (already wired through the form focus chain; not a separate feature)
+- **6 instrumented IME focus contracts** in `SKTextFieldImeFocusComposeTest`
+- Compose instrumented regression: **33/33 passed**
+
+### Consumer guidance
+
+- Flagship `SKTextField` signature is unchanged
+- Disabled / readOnly fields are **not** skipped by `SKDefaultFocusChain` (unchanged contract)
+
+### Demo
+
+[`samples/skone-demo`](../samples/skone-demo/) remains on **Maven Central `1.3.2-alpha04`** until `1.3.2-alpha05` is published. Bump demo coordinates after Central availability.
+
+### Not in this release
+
+- Merged accessibility node / `SetText` exposure on Compose fields
+- Public factory redesign for APIs whose defaults reference `@SKInternal` types
+- Skip-disabled / skip-readOnly focus navigation
+
 ## 1.3.2-alpha04
 
 API-boundary and contract-test release. Flagship consumer APIs are unchanged in behavior.
