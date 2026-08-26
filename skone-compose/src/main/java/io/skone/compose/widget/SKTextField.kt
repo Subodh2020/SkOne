@@ -32,6 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -179,6 +181,10 @@ public fun SKTextField(
     var visualState by remember { mutableStateOf(component.visualState) }
     var supportOverride by remember { mutableStateOf(component.fieldSupportingText) }
 
+    // Stable per-field requester; Compose focus follows [SKFocusChain.focusedId] updates
+    // (IME Next/Previous) without putting UI types into skone-forms.
+    val focusRequester = remember(id) { FocusRequester() }
+
     if (form != null) {
         DisposableEffect(form, id) {
             component.ensureRegistered(form)
@@ -200,6 +206,12 @@ public fun SKTextField(
             }
             visualState = component.visualState
             supportOverride = component.fieldSupportingText
+        }
+        val chainFocusedId by form.focus.focusedId.collectAsState()
+        LaunchedEffect(chainFocusedId, id) {
+            if (chainFocusedId == id) {
+                focusRequester.requestFocus()
+            }
         }
     }
 
@@ -305,6 +317,7 @@ public fun SKTextField(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .focusRequester(focusRequester)
                     .onFocusChanged { state ->
                         component.onFocusChanged(state.isFocused)
                         if (state.isFocused) {
