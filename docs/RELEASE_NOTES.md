@@ -29,7 +29,7 @@ API-boundary and contract-test release. Flagship consumer APIs are unchanged in 
 
 ### Demo
 
-[`samples/skone-demo`](../samples/skone-demo/) remains on **Maven Central `1.3.2-alpha03`** until `1.3.2-alpha04` is published. Bump the demo coordinates after Central availability.
+[`samples/skone-demo`](../samples/skone-demo/) consumes **Maven Central `1.3.2-alpha04`** (published). It does not use `mavenLocal()` or `project(":skone-*")` dependencies.
 
 ### Prior
 
