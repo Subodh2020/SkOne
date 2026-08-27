@@ -1,5 +1,8 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.theme.defaults
 
+import io.skone.common.annotation.SKInternal
 import io.skone.theme.tokens.SKDp
 import io.skone.theme.tokens.SKDuration
 import io.skone.theme.tokens.SKEasing
@@ -16,7 +19,10 @@ private const val FONT_SANS = "skone.sans"
 
 /**
  * Default typography scale (Material 3–aligned roles, framework-agnostic).
+ *
+ * Library default implementation — customize via [io.skone.theme.SKThemeBuilder.typography].
  */
+@SKInternal
 public data class SKDefaultTypographyTokens(
     override val displayLarge: SKTypeScale = type(57f, 64f, 400),
     override val displayMedium: SKTypeScale = type(45f, 52f, 400),
@@ -43,7 +49,8 @@ private fun type(size: Float, lineHeight: Float, weight: Int): SKTypeScale =
         lineHeight = SKSp(lineHeight),
     )
 
-/** Default 4dp spacing scale. */
+/** Default 4dp spacing scale. Library implementation — customize via [io.skone.theme.SKThemeBuilder.spacing]. */
+@SKInternal
 public data class SKDefaultSpacingTokens(
     override val none: SKDp = SKDp(0f),
     override val xxs: SKDp = SKDp(2f),
@@ -56,7 +63,8 @@ public data class SKDefaultSpacingTokens(
     override val xxxl: SKDp = SKDp(64f),
 ) : SKSpacingTokens
 
-/** Default elevation levels. */
+/** Default elevation levels. Library implementation — customize via [io.skone.theme.SKThemeBuilder.elevation]. */
+@SKInternal
 public data class SKDefaultElevationTokens(
     override val level0: SKDp = SKDp(0f),
     override val level1: SKDp = SKDp(1f),
@@ -66,7 +74,8 @@ public data class SKDefaultElevationTokens(
     override val level5: SKDp = SKDp(12f),
 ) : SKElevationTokens
 
-/** Default corner radii. */
+/** Default corner radii. Library implementation — customize via [io.skone.theme.SKThemeBuilder.radius]. */
+@SKInternal
 public data class SKDefaultRadiusTokens(
     override val none: SKDp = SKDp(0f),
     override val xs: SKDp = SKDp(4f),
@@ -77,7 +86,8 @@ public data class SKDefaultRadiusTokens(
     override val full: SKDp = SKDp(999f),
 ) : SKRadiusTokens
 
-/** Default motion tokens. */
+/** Default motion tokens. Library implementation — customize via [io.skone.theme.SKThemeBuilder.motion]. */
+@SKInternal
 public data class SKDefaultMotionTokens(
     override val short1: SKDuration = SKDuration(50),
     override val short2: SKDuration = SKDuration(100),
@@ -97,7 +107,8 @@ public data class SKDefaultMotionTokens(
     override val accelerated: SKEasing = SKEasing("accelerated"),
 ) : SKMotionTokens
 
-/** Default icon sizes. */
+/** Default icon sizes. Library implementation — customize via [io.skone.theme.SKThemeBuilder.icons]. */
+@SKInternal
 public data class SKDefaultIconTokens(
     override val xs: SKDp = SKDp(16f),
     override val sm: SKDp = SKDp(20f),

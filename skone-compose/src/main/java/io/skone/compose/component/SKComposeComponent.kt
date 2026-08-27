@@ -1,8 +1,11 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.compose.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import io.skone.common.annotation.SKInternal
 import io.skone.common.log.SKLogger
 import io.skone.component.framework.SKComponent
 import io.skone.component.framework.SKComponentRuntime
@@ -39,7 +42,10 @@ public fun rememberSKComponentRuntime(
  * Attaches [component] to [runtime] for the composition lifetime.
  *
  * No UI is rendered — this only manages framework lifecycle.
+ *
+ * Framework plumbing for SK widgets; not intended for application use.
  */
+@SKInternal
 @Composable
 public fun SKComponentLifecycle(
     component: SKComponent,
@@ -65,12 +71,15 @@ public interface SKComposeComponent {
 /**
  * Remembers attachment of a factory-created [SKComponent] for the composition.
  *
- * ### Example (future widget)
+ * Framework plumbing for future SK widgets; not intended for application use.
+ *
+ * ### Example (library widget author)
  * ```kotlin
  * val button = rememberSKComponent(runtime) { SKButtonComponent(id = "submit") }
  * // then render UI using button.config / button.performClick()
  * ```
  */
+@SKInternal
 @Composable
 public fun <T : SKComponent> rememberSKComponent(
     runtime: SKComponentRuntime,

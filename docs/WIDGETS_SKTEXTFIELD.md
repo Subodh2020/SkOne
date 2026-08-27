@@ -64,6 +64,7 @@ fieldView.bind(runtime = componentRuntime, form = formController)
 
 ## Related
 
+- [Accessibility capability matrix](ACCESSIBILITY.md) — primary-node contract, required/disabled/readOnly, IME, IconSlot caveat
 - [ADR 0011](adr/0011-sktextfield-flagship-input.md)
 - [Form Framework](FORM_FRAMEWORK.md)
 - [Component Framework](COMPONENT_FRAMEWORK.md)

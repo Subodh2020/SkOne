@@ -1,7 +1,11 @@
-@file:OptIn(io.skone.common.annotation.SKExperimental::class)
+@file:OptIn(
+    io.skone.common.annotation.SKExperimental::class,
+    io.skone.common.annotation.SKInternal::class,
+)
 
 package io.skone.ui.field
 
+import io.skone.common.annotation.SKInternal
 import io.skone.component.SKAnalyticsConfig
 import io.skone.component.SKComponentConfig
 import io.skone.component.accessibility.SKAccessibilityConfig
@@ -105,7 +109,10 @@ public class SKTextFieldComponent(
 
     /**
      * Builds the [SKFormField] descriptor used for auto-registration.
+     *
+     * Bridge plumbing for Compose/XML hosts; not intended for application use.
      */
+    @SKInternal
     public fun toFormField(): SKFormField {
         val requiredRules = if (config.required && rules.none { it.id == "required" }) {
             listOf(SKRequiredRule()) + rules
@@ -127,7 +134,10 @@ public class SKTextFieldComponent(
 
     /**
      * Registers with [form] once. Safe to call multiple times.
+     *
+     * Bridge plumbing for Compose/XML hosts; not intended for application use.
      */
+    @SKInternal
     public fun ensureRegistered(form: SKFormController) {
         if (formRegistered.compareAndSet(false, true)) {
             if (form.registry.get(id) == null) {
@@ -138,7 +148,10 @@ public class SKTextFieldComponent(
 
     /**
      * Unregisters from [form] if previously registered by this component.
+     *
+     * Bridge plumbing for Compose/XML hosts; not intended for application use.
      */
+    @SKInternal
     public fun ensureUnregistered(form: SKFormController) {
         if (formRegistered.compareAndSet(true, false)) {
             form.unregister(id)
@@ -174,6 +187,12 @@ public class SKTextFieldComponent(
     public companion object {
         public const val COMPONENT_TYPE: String = "SKTextField"
 
+        /**
+         * Shared [SKComponentConfig] factory for SKTextField bridges.
+         *
+         * Bridge plumbing; prefer [create] / widget parameters for application code.
+         */
+        @SKInternal
         public fun defaultConfig(
             required: Boolean = false,
             readOnly: Boolean = false,

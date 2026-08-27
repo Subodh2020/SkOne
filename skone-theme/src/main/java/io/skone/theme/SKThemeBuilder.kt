@@ -1,9 +1,10 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.theme
 
 import io.skone.theme.defaults.SKDefaultThemeTokens
 import io.skone.theme.shape.SKDefaultShapeTokens
 import io.skone.theme.shape.SKShapeTokens
-import io.skone.theme.size.SKDefaultSizeTokens
 import io.skone.theme.size.SKSizeTokens
 import io.skone.theme.tokens.SKColorTokens
 import io.skone.theme.tokens.SKElevationTokens

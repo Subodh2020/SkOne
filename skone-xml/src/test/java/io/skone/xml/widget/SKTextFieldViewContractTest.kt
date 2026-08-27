@@ -1,3 +1,5 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.xml.widget
 
 import androidx.test.core.app.ApplicationProvider

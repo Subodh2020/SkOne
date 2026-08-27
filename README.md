@@ -86,6 +86,7 @@ These modules are part of the SKOne monorepo. All library artifacts below are pu
 
 - [Getting Started](docs/GETTING_STARTED.md)
 - [API Reference](https://subodh2020.github.io/SkOne/api/) (hosted Dokka HTML)
+- [Accessibility](docs/ACCESSIBILITY.md) — capability matrix (Compose + XML)
 - [Publishing](docs/PUBLISHING.md)
 - [Playground](docs/PLAYGROUND.md)
 - [SDK API Guidelines](docs/SDK_API_GUIDELINES.md)

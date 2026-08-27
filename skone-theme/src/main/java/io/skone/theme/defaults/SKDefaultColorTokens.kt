@@ -6,8 +6,9 @@ import io.skone.theme.tokens.SKColorTokens
 /**
  * Default light palette for SKOne.
  *
- * Values are seed defaults for the design system — apps override via [io.skone.theme.SKThemeBuilder].
- * Widgets must never hardcode these ARGB values; they resolve through [SKColorTokens].
+ * **Public color seed API** — copy and override individual colors, then pass to
+ * [io.skone.theme.SKThemeBuilder.colors]. Widgets must never hardcode these ARGB values;
+ * they resolve through [SKColorTokens].
  */
 public data class SKLightColorTokens(
     override val primary: SKColor = SKColor(0xFF2F6FED.toInt()),
@@ -42,6 +43,9 @@ public data class SKLightColorTokens(
 
 /**
  * Default dark palette for SKOne.
+ *
+ * **Public color seed API** — copy and override individual colors, then pass to
+ * [io.skone.theme.SKThemeBuilder.colors].
  */
 public data class SKDarkColorTokens(
     override val primary: SKColor = SKColor(0xFFAFC6FF.toInt()),

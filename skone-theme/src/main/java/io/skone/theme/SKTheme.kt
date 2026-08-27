@@ -1,3 +1,5 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.theme
 
 import io.skone.theme.defaults.SKDefaultThemeTokens
@@ -5,6 +7,7 @@ import io.skone.theme.shape.SKDefaultShapeTokens
 import io.skone.theme.shape.SKShapeTokens
 import io.skone.theme.size.SKDefaultSizeTokens
 import io.skone.theme.size.SKSizeTokens
+import io.skone.theme.tokens.SKRadiusTokens
 import io.skone.theme.tokens.SKThemeTokens
 
 /**
@@ -23,8 +26,8 @@ public data class SKTheme(
     public val name: String,
     public val mode: SKThemeMode,
     public val tokens: SKThemeTokens,
-    public val sizes: SKSizeTokens = SKDefaultSizeTokens(),
-    public val shapes: SKShapeTokens = SKDefaultShapeTokens(tokens.radius),
+    public val sizes: SKSizeTokens = skoneDefaultSizeTokens(),
+    public val shapes: SKShapeTokens = skoneDefaultShapeTokens(tokens.radius),
 )
 
 /**
@@ -45,3 +48,10 @@ public object SKThemes {
         tokens = SKDefaultThemeTokens.dark(),
     )
 }
+
+/** Resolves library default size tokens without naming the impl in [SKTheme] signatures. */
+private fun skoneDefaultSizeTokens(): SKSizeTokens = SKDefaultSizeTokens()
+
+/** Resolves library default shape tokens without naming the impl in [SKTheme] signatures. */
+private fun skoneDefaultShapeTokens(radius: SKRadiusTokens): SKShapeTokens =
+    SKDefaultShapeTokens(radius)

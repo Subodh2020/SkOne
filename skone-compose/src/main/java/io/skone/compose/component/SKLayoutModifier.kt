@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.skone.common.annotation.SKInternal
 import io.skone.component.framework.layout.SKLayoutMode
 import io.skone.component.framework.layout.SKLayoutSpec
 import io.skone.compose.theme.toDp
@@ -14,8 +15,9 @@ import io.skone.compose.theme.toDp
 /**
  * Maps a framework [SKLayoutSpec] to a Compose [Modifier].
  *
- * Used by future widgets — not a widget itself.
+ * Framework plumbing used by SK widgets — not an application API.
  */
+@SKInternal
 public fun Modifier.skLayout(spec: SKLayoutSpec): Modifier {
     var result = this
     result = when (spec.width.mode) {

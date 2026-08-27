@@ -1,5 +1,6 @@
 package io.skone.theme.size
 
+import io.skone.common.annotation.SKInternal
 import io.skone.theme.tokens.SKDp
 
 /**
@@ -45,7 +46,11 @@ public interface SKSizeTokens {
 
 /**
  * Default SKOne size token table (4dp grid aligned).
+ *
+ * Library default implementation — applications should supply [SKSizeTokens]
+ * via [io.skone.theme.SKThemeBuilder.sizes] rather than depending on this type.
  */
+@SKInternal
 public data class SKDefaultSizeTokens(
     override val minTouchTarget: SKDp = SKDp(48f),
 ) : SKSizeTokens {

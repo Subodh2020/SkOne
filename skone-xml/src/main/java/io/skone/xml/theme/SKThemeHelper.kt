@@ -7,6 +7,7 @@ package io.skone.xml.theme
 
 import android.content.Context
 import android.content.res.Configuration
+import io.skone.common.annotation.SKInternal
 import io.skone.theme.SKDefaultThemeProvider
 import io.skone.theme.SKTheme
 import io.skone.theme.SKThemeMode
@@ -69,6 +70,7 @@ public object SKThemeHelper {
     /**
      * Clears the installed theme. Intended for tests.
      */
+    @SKInternal
     @JvmStatic
     public fun clear() {
         synchronized(lock) {

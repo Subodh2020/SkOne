@@ -1,3 +1,5 @@
+@file:OptIn(io.skone.common.annotation.SKInternal::class)
+
 package io.skone.ui.field
 
 import io.skone.component.appearance.SKAppearanceConfig

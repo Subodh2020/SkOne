@@ -1,5 +1,6 @@
 package io.skone.theme.shape
 
+import io.skone.common.annotation.SKInternal
 import io.skone.theme.tokens.SKDp
 import io.skone.theme.tokens.SKRadiusTokens
 
@@ -58,7 +59,11 @@ public interface SKShapeTokens {
 
 /**
  * Default shapes backed by radius tokens.
+ *
+ * Library default implementation — applications should supply [SKShapeTokens]
+ * via [io.skone.theme.SKThemeBuilder.shapes] rather than depending on this type.
  */
+@SKInternal
 public data class SKDefaultShapeTokens(
     private val radii: SKRadiusTokens,
 ) : SKShapeTokens {
