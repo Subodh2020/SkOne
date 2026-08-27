@@ -37,9 +37,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.KeyboardType
@@ -280,19 +284,10 @@ public fun SKTextField(
         }
     }
 
+    // Layout-only wrapper. Primary a11y (CD / testTag / Error / editable) lives on BasicTextField.
     Column(
         modifier = modifier
             .alpha(fieldAlpha)
-            .semantics(mergeDescendants = true) {
-                contentDescription = accessibility.contentDescription
-                    ?: label
-                    ?: hint
-                    ?: "Text field"
-                accessibility.testTag?.let { testTag = it }
-                if (visualState == SKFieldVisualState.Error) {
-                    error(supportOverride ?: supportingText ?: "Invalid")
-                }
-            }
             .skLayout(layout),
     ) {
         Box(
@@ -322,6 +317,29 @@ public fun SKTextField(
                         component.onFocusChanged(state.isFocused)
                         if (state.isFocused) {
                             form?.requestFocus(id)
+                        }
+                    }
+                    .semantics {
+                        // Prefer explicit CD; otherwise fall back to label/hint without altering required '*'.
+                        contentDescription = accessibility.contentDescription
+                            ?: label
+                            ?: hint
+                            ?: "Text field"
+                        accessibility.testTag?.let { testTag = it }
+                        // Required is visual ('*') plus stateDescription — never rewrite explicit CD.
+                        val requiredState = if (required) "Required" else null
+                        val combinedState = listOfNotNull(accessibility.stateDescription, requiredState)
+                            .takeIf { it.isNotEmpty() }
+                            ?.joinToString(", ")
+                        if (combinedState != null) {
+                            stateDescription = combinedState
+                        }
+                        accessibility.role?.toComposeRole()?.let { role = it }
+                        if (accessibility.heading) {
+                            heading()
+                        }
+                        if (visualState == SKFieldVisualState.Error) {
+                            error(supportOverride ?: supportingText ?: "Invalid")
                         }
                     },
                 enabled = enabled,
@@ -494,6 +512,18 @@ private fun SKKeyboardType.toCompose(): KeyboardType = when (this) {
     SKKeyboardType.Email -> KeyboardType.Email
     SKKeyboardType.Password -> KeyboardType.Password
     SKKeyboardType.Uri -> KeyboardType.Uri
+}
+
+/** Maps [SKAccessibilityConfig.role] strings onto Compose [Role] when they match a known role. */
+private fun String.toComposeRole(): Role? = when (lowercase()) {
+    "button" -> Role.Button
+    "checkbox" -> Role.Checkbox
+    "switch" -> Role.Switch
+    "radiobutton", "radio" -> Role.RadioButton
+    "tab" -> Role.Tab
+    "image" -> Role.Image
+    "dropdownlist", "dropdown" -> Role.DropdownList
+    else -> null
 }
 
 private const val DisabledAlpha = 0.38f

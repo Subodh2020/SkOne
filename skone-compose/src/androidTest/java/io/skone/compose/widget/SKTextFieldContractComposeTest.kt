@@ -34,8 +34,7 @@ import org.junit.runner.RunWith
  *
  * Floating-label layout contracts remain in [SKTextFieldComposeTest].
  *
- * Text input targets the editable semantics node ([hasSetTextAction]), because the
- * outer merged a11y node (testTag / contentDescription) does not expose RequestFocus.
+ * Text input targets the primary editable node via [testTag] (same node as SetText).
  */
 @RunWith(AndroidJUnit4::class)
 class SKTextFieldContractComposeTest {
@@ -105,7 +104,7 @@ class SKTextFieldContractComposeTest {
             }
         }
 
-        composeRule.onNode(hasSetTextAction()).performTextInput("not-an-email")
+        composeRule.onNodeWithTag("email_field").performTextInput("not-an-email")
         composeRule.waitForIdle()
 
         composeRule.runOnIdle {
@@ -122,6 +121,7 @@ class SKTextFieldContractComposeTest {
         composeRule.onNodeWithTag("email_field").assert(
             SemanticsMatcher.keyIsDefined(SemanticsProperties.Error),
         )
+        composeRule.onNodeWithTag("email_field").assert(hasSetTextAction())
     }
 
     @Test
@@ -186,7 +186,7 @@ class SKTextFieldContractComposeTest {
         composeRule.onNodeWithText("readonly@skone.io").assertIsDisplayed()
         // readOnly fields may still expose SetText; production must ignore edits.
         runCatching {
-            composeRule.onNode(hasSetTextAction()).performTextInput("changed")
+            composeRule.onNodeWithTag("readonly_field").performTextInput("changed")
         }
         composeRule.waitForIdle()
         composeRule.runOnIdle {
@@ -217,7 +217,7 @@ class SKTextFieldContractComposeTest {
         }
 
         composeRule.onNodeWithText("Notes").assertIsDisplayed()
-        composeRule.onNode(hasSetTextAction()).performTextInput("hello")
+        composeRule.onNodeWithTag("notes_field").performTextInput("hello")
         composeRule.waitForIdle()
         composeRule.runOnIdle {
             assertEquals("hello", valueState.value)

@@ -6,9 +6,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertIsNotFocused
-import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasSetTextAction
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performImeAction
@@ -28,6 +25,9 @@ import org.junit.runner.RunWith
 
 /**
  * Instrumented contracts: IME Next must move actual Compose focus via the form focus chain.
+ *
+ * After P1 a11y unification, [testTag] lives on the primary editable node, so focus/IME
+ * targeting uses [onNodeWithTag] directly.
  */
 @RunWith(AndroidJUnit4::class)
 class SKTextFieldImeFocusComposeTest {
@@ -35,11 +35,7 @@ class SKTextFieldImeFocusComposeTest {
     @get:Rule
     val composeRule = createComposeRule()
 
-    private fun editable(tag: String) =
-        composeRule.onNode(
-            hasSetTextAction() and hasAnyAncestor(hasTestTag(tag)),
-            useUnmergedTree = true,
-        )
+    private fun editable(tag: String) = composeRule.onNodeWithTag(tag)
 
     @Test
     fun firstFieldImeNextMovesFocusToSecondField() {

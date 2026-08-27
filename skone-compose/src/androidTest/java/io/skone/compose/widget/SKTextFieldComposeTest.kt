@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -221,13 +220,13 @@ class SKTextFieldComposeTest {
                         required = true,
                         rules = listOf(SKRequiredRule()),
                         imeAction = SKImeAction.Next,
+                        accessibility = SKAccessibilityConfig(testTag = "email_register"),
                     )
                 }
             }
         }
         composeRule.onNodeWithText("Email *").assertIsDisplayed()
-        // Outer merged a11y node lacks RequestFocus; target the SetText semantics node.
-        composeRule.onNode(hasSetTextAction()).performTextInput("user@skone.io")
+        composeRule.onNodeWithTag("email_register").performTextInput("user@skone.io")
         composeRule.runOnIdle {
             assert(form.registry.get("email") != null)
             assert(form.registry.state("email")?.displayValue?.contains("user") == true)
