@@ -4,9 +4,9 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 
 **Not used:** deprecated OSSRH staging repositories.
 
-**Milestone:** 1.3.2 — publishing infrastructure. Maven Central releases are published via GitHub Actions (`publish_central=true`).
+**Milestone:** 1.4.0 — API / accessibility stabilization alphas. Maven Central releases are published via GitHub Actions (`publish_central=true`).
 
-**Release line:** `1.3.2-alpha05` — Compose `SKTextField` IME Next/Previous → actual UI focus. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+**Release line (in-repo):** `1.4.0-alpha01` — **PRE-RELEASE / PRE-PUBLISH** (API hygiene, annotation hygiene, theme defaults, Compose field a11y, docs). See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
 **Current published version on Maven Central:** `1.3.2-alpha05`.
 
@@ -25,6 +25,8 @@ As of **`1.3.2-alpha05`** (published), these artifacts are available:
 | Forms | `com.thesubodhgupta.skone:skone-forms:1.3.2-alpha05` |
 | Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha05` |
 | XML | `com.thesubodhgupta.skone:skone-xml:1.3.2-alpha05` |
+
+**In-repo next:** `1.4.0-alpha01` is prepared for publish but **not yet on Central**. Keep external consumers and `samples/skone-demo` on `1.3.2-alpha05` until Central lists `1.4.0-alpha01`.
 
 **Recommended consumer dependencies** (see [Getting Started — Choosing SKOne dependencies](GETTING_STARTED.md#choosing-skone-dependencies)):
 
@@ -97,11 +99,12 @@ Single source of truth: **`VERSION_NAME`** in `gradle.properties`.
 
 | Stage | Example |
 |-------|---------|
-| Alpha | `1.3.2-alpha05` (current published release) |
-| Beta | `1.3.2-beta01` |
-| RC | `1.3.2-rc01` |
-| Stable | `1.3.2` |
-| Snapshot | `1.3.2-SNAPSHOT` |
+| Alpha (in-repo / next) | `1.4.0-alpha01` (**PRE-PUBLISH** — not on Central yet) |
+| Alpha (latest published) | `1.3.2-alpha05` |
+| Beta | `1.4.0-beta01` |
+| RC | `1.4.0-rc01` |
+| Stable | `1.4.0` |
+| Snapshot | `1.4.0-SNAPSHOT` |
 
 Also keep the `skone` version in `gradle/libs.versions.toml` in sync for documentation consistency (publishing reads `VERSION_NAME`).
 

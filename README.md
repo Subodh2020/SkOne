@@ -3,13 +3,17 @@
 **SKOne** is an open-source, enterprise-grade Android developer platform — modular, Kotlin-first, AI-ready, with Jetpack Compose and XML support.
 
 **Repository:** https://github.com/Subodh2020/SkOne  
-**Release version:** **1.3.2-alpha05** (publish to Maven Central via GitHub Actions)
+**In-repo release:** **1.4.0-alpha01** — **PRE-RELEASE / PRE-PUBLISH** (not yet on Maven Central)
 
-**1.3.2-alpha05** — Compose `SKTextField` IME Next/Previous moves actual UI focus via `FocusRequester`. No public API change. See [Release Notes](docs/RELEASE_NOTES.md).
+**1.4.0-alpha01** — API hygiene, annotation hygiene, theme default policy, Compose `SKTextField` accessibility unification, accessibility docs, Getting Started on `master`. See [Release Notes](docs/RELEASE_NOTES.md).
 
-Stable public APIs remain usable without `@OptIn`. Direct use of newly `@SKInternal` implementation types may need `@OptIn(SKInternal::class)`.
+**Latest published on Maven Central:** **`1.3.2-alpha05`**. Install from Central using that version until `1.4.0-alpha01` is published.
+
+Stable public APIs remain usable without `@OptIn`. Direct use of `@SKInternal` implementation types may need `@OptIn(SKInternal::class)`.
 
 ## Install from Maven Central
+
+Until `1.4.0-alpha01` is published, consume the last Central release:
 
 ```kotlin
 repositories {
@@ -31,7 +35,8 @@ See [Getting Started](docs/GETTING_STARTED.md#choosing-skone-dependencies) for C
 | | |
 |---|---|
 | **Group** | `com.thesubodhgupta.skone` |
-| **Latest (Central)** | `1.3.2-alpha05` (published) |
+| **Latest published (Central)** | `1.3.2-alpha05` |
+| **In-repo / next** | `1.4.0-alpha01` (**PRE-RELEASE** — not published yet) |
 | **Browse** | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 | **Portal** | https://central.sonatype.com/ |
 
@@ -55,7 +60,7 @@ See [Publishing Guide](docs/PUBLISHING.md) for maintainer workflows.
 
 ## Repository modules
 
-These modules are part of the SKOne monorepo. All library artifacts below are published to Maven Central at **`1.3.2-alpha05`**.
+These modules are part of the SKOne monorepo. Library artifacts are published to Maven Central at **`1.3.2-alpha05`**. In-repo `VERSION_NAME` is **`1.4.0-alpha01`** (pre-publish).
 
 | Module | Description | Maven Central |
 |--------|-------------|---------------|
@@ -98,7 +103,7 @@ These modules are part of the SKOne monorepo. All library artifacts below are pu
 
 ## Roadmap
 
-Future milestones (for example **1.4.0**, **1.5.0**, **1.6.0**) describe planned work in [ADRs](docs/adr/) and module documentation. They are **not released** unless explicitly listed under Maven Central above.
+Future milestones (for example **1.4.0**, **1.5.0**, **1.6.0**) describe planned work in [ADRs](docs/adr/) and module documentation. They are **not released** on Maven Central unless explicitly listed as published above.
 
 ## License
 
