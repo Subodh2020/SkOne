@@ -18,7 +18,7 @@ P1 Compose focus fix. **No public API change.**
 
 ### Demo
 
-[`samples/skone-demo`](../samples/skone-demo/) remains on **Maven Central `1.3.2-alpha04`** until `1.3.2-alpha05` is published. Bump demo coordinates after Central availability.
+[`samples/skone-demo`](../samples/skone-demo/) consumes **Maven Central `1.3.2-alpha05`** (published). It does not use `mavenLocal()` or `project(":skone-*")` dependencies.
 
 ### Not in this release
 

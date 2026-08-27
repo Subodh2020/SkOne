@@ -31,12 +31,11 @@ See [Getting Started](docs/GETTING_STARTED.md#choosing-skone-dependencies) for C
 | | |
 |---|---|
 | **Group** | `com.thesubodhgupta.skone` |
-| **Latest (Central)** | `1.3.2-alpha04` (until `1.3.2-alpha05` is published) |
-| **Prepared release** | `1.3.2-alpha05` |
+| **Latest (Central)** | `1.3.2-alpha05` (published) |
 | **Browse** | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 | **Portal** | https://central.sonatype.com/ |
 
-**Artifacts (`1.3.2-alpha05` coordinates after publish):**
+**Published artifacts (`1.3.2-alpha05`):**
 
 | Artifact | Typical use |
 |----------|-------------|
@@ -56,7 +55,7 @@ See [Publishing Guide](docs/PUBLISHING.md) for maintainer workflows.
 
 ## Repository modules
 
-These modules are part of the SKOne monorepo. Library artifacts publish to Maven Central at **`1.3.2-alpha05`** (after release).
+These modules are part of the SKOne monorepo. All library artifacts below are published to Maven Central at **`1.3.2-alpha05`**.
 
 | Module | Description | Maven Central |
 |--------|-------------|---------------|

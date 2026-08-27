@@ -6,27 +6,25 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 
 **Milestone:** 1.3.2 — publishing infrastructure. Maven Central releases are published via GitHub Actions (`publish_central=true`).
 
-**Release line (prepared):** `1.3.2-alpha05` — Compose `SKTextField` IME Next/Previous → actual UI focus. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+**Release line:** `1.3.2-alpha05` — Compose `SKTextField` IME Next/Previous → actual UI focus. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
-**Last published on Maven Central:** `1.3.2-alpha04`. Keep consumer / demo coordinates on `1.3.2-alpha04` until `1.3.2-alpha05` is available on Central.
+**Current published version on Maven Central:** `1.3.2-alpha05`.
 
 ## Currently on Maven Central
 
-As of **`1.3.2-alpha04`** (last published), these artifacts are available:
+As of **`1.3.2-alpha05`** (published), these artifacts are available:
 
 | Artifact | Coordinates |
 |----------|-------------|
-| BOM | `com.thesubodhgupta.skone:skone-bom:1.3.2-alpha04` |
-| Common | `com.thesubodhgupta.skone:skone-common:1.3.2-alpha04` |
-| Plugin | `com.thesubodhgupta.skone:skone-plugin:1.3.2-alpha04` |
-| Theme | `com.thesubodhgupta.skone:skone-theme:1.3.2-alpha04` |
-| Core | `com.thesubodhgupta.skone:skone-core:1.3.2-alpha04` |
-| UI | `com.thesubodhgupta.skone:skone-ui:1.3.2-alpha04` |
-| Forms | `com.thesubodhgupta.skone:skone-forms:1.3.2-alpha04` |
-| Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha04` |
-| XML | `com.thesubodhgupta.skone:skone-xml:1.3.2-alpha04` |
-
-**Prepared next release coordinates (`1.3.2-alpha05`):** same artifacts with version `1.3.2-alpha05` after publish.
+| BOM | `com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05` |
+| Common | `com.thesubodhgupta.skone:skone-common:1.3.2-alpha05` |
+| Plugin | `com.thesubodhgupta.skone:skone-plugin:1.3.2-alpha05` |
+| Theme | `com.thesubodhgupta.skone:skone-theme:1.3.2-alpha05` |
+| Core | `com.thesubodhgupta.skone:skone-core:1.3.2-alpha05` |
+| UI | `com.thesubodhgupta.skone:skone-ui:1.3.2-alpha05` |
+| Forms | `com.thesubodhgupta.skone:skone-forms:1.3.2-alpha05` |
+| Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha05` |
+| XML | `com.thesubodhgupta.skone:skone-xml:1.3.2-alpha05` |
 
 **Recommended consumer dependencies** (see [Getting Started — Choosing SKOne dependencies](GETTING_STARTED.md#choosing-skone-dependencies)):
 
@@ -99,7 +97,7 @@ Single source of truth: **`VERSION_NAME`** in `gradle.properties`.
 
 | Stage | Example |
 |-------|---------|
-| Alpha | `1.3.2-alpha05` (prepared release line) |
+| Alpha | `1.3.2-alpha05` (current published release) |
 | Beta | `1.3.2-beta01` |
 | RC | `1.3.2-rc01` |
 | Stable | `1.3.2` |
