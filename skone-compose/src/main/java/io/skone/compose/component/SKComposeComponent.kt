@@ -1,11 +1,8 @@
-@file:OptIn(io.skone.common.annotation.SKInternal::class)
-
 package io.skone.compose.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import io.skone.common.log.SKDefaultLogger
 import io.skone.common.log.SKLogger
 import io.skone.component.framework.SKComponent
 import io.skone.component.framework.SKComponentRuntime
@@ -20,10 +17,12 @@ import io.skone.component.framework.plugin.SKComponentPlugin
  *
  * This is **not** a widget — future SK composables will obtain the runtime via this helper
  * or an explicit parameter.
+ *
+ * @param logger Optional logger; when null, the library default logger is used.
  */
 @Composable
 public fun rememberSKComponentRuntime(
-    logger: SKLogger = SKDefaultLogger,
+    logger: SKLogger? = null,
     icons: SKIconProvider = SKNoOpIconProvider,
     analytics: SKAnalyticsHook = SKNoOpAnalyticsHook,
     plugins: List<SKComponentPlugin> = emptyList(),

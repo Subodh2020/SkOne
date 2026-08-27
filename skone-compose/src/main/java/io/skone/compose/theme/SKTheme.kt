@@ -41,18 +41,19 @@ public val skTheme: SKThemeModel
  * ```
  *
  * @param mode Theme mode to resolve.
- * @param provider Theme provider; defaults to [SKDefaultThemeProvider].
+ * @param provider Optional theme provider; when null, the library default provider is used.
  * @param theme Explicit theme override; when non-null, [mode]/[provider] are ignored.
  * @param content Composable content.
  */
 @Composable
 public fun SKTheme(
     mode: SKThemeMode = SKThemeMode.System,
-    provider: SKThemeProvider = SKDefaultThemeProvider(),
+    provider: SKThemeProvider? = null,
     theme: SKThemeModel? = null,
     content: @Composable () -> Unit,
 ) {
-    val resolved = theme ?: provider.theme(
+    val resolvedProvider = provider ?: SKDefaultThemeProvider()
+    val resolved = theme ?: resolvedProvider.theme(
         mode = mode,
         isSystemInDarkTheme = isSystemInDarkTheme(),
     )

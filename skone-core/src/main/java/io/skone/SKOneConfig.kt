@@ -15,7 +15,10 @@ import io.skone.plugin.SKPlugin
  * @property ai Provider-agnostic AI configuration.
  */
 public data class SKOneConfig(
-    public val logger: SKLogger = SKDefaultLogger,
+    public val logger: SKLogger = skoneDefaultLogger(),
     public val plugins: List<SKPlugin> = emptyList(),
     public val ai: SKAIConfig = SKAIConfig.Disabled,
 )
+
+/** Resolves the SDK default logger without exposing it in the [SKOneConfig] signature. */
+private fun skoneDefaultLogger(): SKLogger = SKDefaultLogger

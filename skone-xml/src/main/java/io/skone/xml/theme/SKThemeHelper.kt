@@ -39,16 +39,19 @@ public object SKThemeHelper {
 
     /**
      * Resolves and installs a theme for [mode] using [provider].
+     *
+     * When [provider] is null, the library default provider is used.
      */
     @JvmStatic
     @JvmOverloads
     public fun install(
         context: Context,
         mode: SKThemeMode = SKThemeMode.System,
-        provider: SKThemeProvider = SKDefaultThemeProvider(),
+        provider: SKThemeProvider? = null,
     ) {
+        val resolvedProvider = provider ?: SKDefaultThemeProvider()
         val dark = context.isSystemInDarkTheme()
-        install(provider.theme(mode = mode, isSystemInDarkTheme = dark))
+        install(resolvedProvider.theme(mode = mode, isSystemInDarkTheme = dark))
     }
 
     /**

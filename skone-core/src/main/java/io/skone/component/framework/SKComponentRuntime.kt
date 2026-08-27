@@ -56,11 +56,13 @@ public class SKComponentRuntime internal constructor(
     public companion object {
         /**
          * Creates a runtime with default in-memory managers.
+         *
+         * @param logger Optional logger; when null, the library default logger is used.
          */
         @JvmStatic
         @JvmOverloads
         public fun create(
-            logger: SKLogger = io.skone.common.log.SKDefaultLogger,
+            logger: SKLogger? = null,
             icons: SKIconProvider = io.skone.component.framework.icon.SKNoOpIconProvider,
             analytics: SKAnalyticsHook = io.skone.component.framework.analytics.SKNoOpAnalyticsHook,
             plugins: List<SKComponentPlugin> = emptyList(),
@@ -74,7 +76,7 @@ public class SKComponentRuntime internal constructor(
                 animation = io.skone.component.framework.animation.SKDefaultAnimationManager(),
                 icons = icons,
                 analytics = analytics,
-                logger = logger,
+                logger = logger ?: io.skone.common.log.SKDefaultLogger,
                 plugins = runtimePlugins,
             ).also { rt ->
                 runtimePlugins.forEach { it.onRuntimeReady(rt) }

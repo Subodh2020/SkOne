@@ -294,25 +294,30 @@ public class SKFormController internal constructor(
     }
 
     public companion object {
-        /** Creates a controller with default engines. */
+        /**
+         * Creates a controller with library-default engines.
+         *
+         * Prefer this for normal apps. Pass public interface implementations only when
+         * customizing; do not depend on `@SKInternal` default engine types.
+         */
         @JvmStatic
         @JvmOverloads
         public fun create(
-            registry: SKFieldRegistry = SKDefaultFieldRegistry(),
-            validation: SKValidationEngine = SKDefaultValidationEngine(),
-            formatters: SKFormatterEngine = SKDefaultFormatterEngine(),
-            masks: SKInputMaskEngine = SKDefaultInputMaskEngine(),
-            focus: SKFocusChain = SKDefaultFocusChain(),
-            errors: SKFormErrorManager = SKDefaultFormErrorManager(),
-            ai: SKFormAIHooks = SKDefaultFormAIHooks(),
+            registry: SKFieldRegistry? = null,
+            validation: SKValidationEngine? = null,
+            formatters: SKFormatterEngine? = null,
+            masks: SKInputMaskEngine? = null,
+            focus: SKFocusChain? = null,
+            errors: SKFormErrorManager? = null,
+            ai: SKFormAIHooks? = null,
         ): SKFormController = SKFormController(
-            registry = registry,
-            validation = validation,
-            formatters = formatters,
-            masks = masks,
-            focus = focus,
-            errors = errors,
-            ai = ai,
+            registry = registry ?: SKDefaultFieldRegistry(),
+            validation = validation ?: SKDefaultValidationEngine(),
+            formatters = formatters ?: SKDefaultFormatterEngine(),
+            masks = masks ?: SKDefaultInputMaskEngine(),
+            focus = focus ?: SKDefaultFocusChain(),
+            errors = errors ?: SKDefaultFormErrorManager(),
+            ai = ai ?: SKDefaultFormAIHooks(),
         ).also {
             it._state.value = SKFormState(lifecycle = SKFormLifecycle.Ready)
         }
