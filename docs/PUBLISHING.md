@@ -6,27 +6,25 @@ Production-grade Maven publishing for the SKOne SDK using the **Maven Central Po
 
 **Milestone:** 1.4.0 — API / accessibility stabilization alphas. Maven Central releases are published via GitHub Actions (`publish_central=true`).
 
-**Release line (in-repo):** `1.4.0-alpha01` — **PRE-RELEASE / PRE-PUBLISH** (API hygiene, annotation hygiene, theme defaults, Compose field a11y, docs). See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+**Release line:** `1.4.0-alpha01` — published alpha (API hygiene, annotation hygiene, theme defaults, Compose field a11y, docs). See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
-**Current published version on Maven Central:** `1.3.2-alpha05`.
+**Current published version on Maven Central:** `1.4.0-alpha01`.
 
 ## Currently on Maven Central
 
-As of **`1.3.2-alpha05`** (published), these artifacts are available:
+As of **`1.4.0-alpha01`** (published alpha), these artifacts are available:
 
 | Artifact | Coordinates |
 |----------|-------------|
-| BOM | `com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05` |
-| Common | `com.thesubodhgupta.skone:skone-common:1.3.2-alpha05` |
-| Plugin | `com.thesubodhgupta.skone:skone-plugin:1.3.2-alpha05` |
-| Theme | `com.thesubodhgupta.skone:skone-theme:1.3.2-alpha05` |
-| Core | `com.thesubodhgupta.skone:skone-core:1.3.2-alpha05` |
-| UI | `com.thesubodhgupta.skone:skone-ui:1.3.2-alpha05` |
-| Forms | `com.thesubodhgupta.skone:skone-forms:1.3.2-alpha05` |
-| Compose | `com.thesubodhgupta.skone:skone-compose:1.3.2-alpha05` |
-| XML | `com.thesubodhgupta.skone:skone-xml:1.3.2-alpha05` |
-
-**In-repo next:** `1.4.0-alpha01` is prepared for publish but **not yet on Central**. Keep external consumers and `samples/skone-demo` on `1.3.2-alpha05` until Central lists `1.4.0-alpha01`.
+| BOM | `com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01` |
+| Common | `com.thesubodhgupta.skone:skone-common:1.4.0-alpha01` |
+| Plugin | `com.thesubodhgupta.skone:skone-plugin:1.4.0-alpha01` |
+| Theme | `com.thesubodhgupta.skone:skone-theme:1.4.0-alpha01` |
+| Core | `com.thesubodhgupta.skone:skone-core:1.4.0-alpha01` |
+| UI | `com.thesubodhgupta.skone:skone-ui:1.4.0-alpha01` |
+| Forms | `com.thesubodhgupta.skone:skone-forms:1.4.0-alpha01` |
+| Compose | `com.thesubodhgupta.skone:skone-compose:1.4.0-alpha01` |
+| XML | `com.thesubodhgupta.skone:skone-xml:1.4.0-alpha01` |
 
 **Recommended consumer dependencies** (see [Getting Started — Choosing SKOne dependencies](GETTING_STARTED.md#choosing-skone-dependencies)):
 
@@ -53,14 +51,14 @@ repositories {
     mavenCentral()
 }
 
-implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
 implementation("com.thesubodhgupta.skone:skone-compose")
 ```
 
 Example dependency (XML/View):
 
 ```kotlin
-implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
+implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
 implementation("com.thesubodhgupta.skone:skone-xml")
 ```
 
@@ -99,8 +97,7 @@ Single source of truth: **`VERSION_NAME`** in `gradle.properties`.
 
 | Stage | Example |
 |-------|---------|
-| Alpha (in-repo / next) | `1.4.0-alpha01` (**PRE-PUBLISH** — not on Central yet) |
-| Alpha (latest published) | `1.3.2-alpha05` |
+| Alpha (latest published) | `1.4.0-alpha01` |
 | Beta | `1.4.0-beta01` |
 | RC | `1.4.0-rc01` |
 | Stable | `1.4.0` |
@@ -195,7 +192,7 @@ Helpers:
 ./scripts/central-portal.sh wait <deploymentId> VALIDATED 900
 ./scripts/central-portal.sh publish <deploymentId>
 ./scripts/central-portal.sh wait <deploymentId> PUBLISHED 900
-./scripts/central-portal.sh verify-maven 1.3.2-alpha05 skone-bom
+./scripts/central-portal.sh verify-maven 1.4.0-alpha01 skone-bom
 ```
 
 ## Expected timelines

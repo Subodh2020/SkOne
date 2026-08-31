@@ -2,11 +2,11 @@
 
 Get from zero to a working SKOne Compose screen in a few minutes.
 
-This guide uses the published Maven Central release **`1.3.2-alpha05`**.
+This guide uses the published Maven Central release **`1.4.0-alpha01`**.
 
 ## 1. Requirements
 
-SKOne `1.3.2-alpha05` is built and tested with the toolchain below (from this repository’s Gradle configuration):
+SKOne `1.4.0-alpha01` is built and tested with the toolchain below (from this repository’s Gradle configuration):
 
 | Requirement | Version used by SKOne |
 |-------------|----------------------|
@@ -34,14 +34,14 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
     implementation("com.thesubodhgupta.skone:skone-compose")
 }
 ```
 
 ### Why use the BOM?
 
-`skone-bom` pins compatible versions of all eight SKOne library modules. Declare the BOM once, then add module dependencies **without** repeating version numbers. Gradle resolves matching `1.3.2-alpha05` artifacts for every SKOne module on your classpath.
+`skone-bom` pins compatible versions of all eight SKOne library modules. Declare the BOM once, then add module dependencies **without** repeating version numbers. Gradle resolves matching `1.4.0-alpha01` artifacts for every SKOne module on your classpath.
 
 The BOM is defined in `skone-bom/build.gradle.kts` and constrains: `skone-common`, `skone-plugin`, `skone-theme`, `skone-core`, `skone-ui`, `skone-forms`, `skone-compose`, and `skone-xml`.
 
@@ -58,7 +58,7 @@ Browse published artifacts: https://repo.maven.apache.org/maven2/com/thesubodhgu
 
 ```kotlin
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
     implementation("com.thesubodhgupta.skone:skone-compose")
 
     // Required by your app — not managed by the SKOne BOM
@@ -73,7 +73,7 @@ This is the minimal SKOne setup for `SKTheme`, `SKText`, `SKTextField`, and form
 
 ```kotlin
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
     implementation("com.thesubodhgupta.skone:skone-xml")
 }
 ```
@@ -315,7 +315,7 @@ SKTextField(
 
 ### Floating-label behavior (Compose)
 
-In **`1.3.2-alpha05`**, the Compose `SKTextField` uses an integrated **floating-label outlined field**:
+In **`1.4.0-alpha01`**, the Compose `SKTextField` uses an integrated **floating-label outlined field**:
 
 | State | Behavior |
 |-------|----------|
@@ -325,7 +325,7 @@ In **`1.3.2-alpha05`**, the Compose `SKTextField` uses an integrated **floating-
 | **Supporting text** | Rendered below the field when provided |
 | **Required** | Label shows a required indicator (for example `Email *`) |
 
-This improved floating-label UX applies to the **Compose** `SKTextField` in `1.3.2-alpha05`. The XML `SKTextFieldView` uses a separate layout and does not share this Compose implementation.
+This improved floating-label UX applies to the **Compose** `SKTextField` in `1.4.0-alpha01`. The XML `SKTextFieldView` uses a separate layout and does not share this Compose implementation.
 
 ## 8. Forms and Validation
 
@@ -404,7 +404,7 @@ See also [API Reference guide](API_REFERENCE.md) for local generation commands.
 
 | Sample | Purpose |
 |--------|---------|
-| [`samples/skone-demo/`](../samples/skone-demo/) | External Maven Central consumer (`1.3.2-alpha05`) — no `project(...)` dependencies |
+| [`samples/skone-demo/`](../samples/skone-demo/) | External Maven Central consumer (`1.4.0-alpha01`) — no `project(...)` dependencies |
 | [`samples/skone-playground/`](../samples/skone-playground/) | Full interactive developer showcase (monorepo project deps) |
 | [`samples/skone-sample/`](../samples/skone-sample/) | Minimal integration sample (monorepo project deps) |
 

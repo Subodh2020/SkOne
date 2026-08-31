@@ -2,7 +2,7 @@
 
 ## 1.4.0-alpha01
 
-**PRE-RELEASE / PRE-PUBLISH.** Repository `VERSION_NAME` is `1.4.0-alpha01`. This version is **not yet published** to Maven Central. The latest published Central release remains **`1.3.2-alpha05`**. The external demo continues to consume Central `1.3.2-alpha05` until `1.4.0-alpha01` is available on Central.
+**Published alpha** on Maven Central (`1.4.0-alpha01`). Deployment ID: `4bf8a86e-494e-4f8d-af2a-624e0f77da29`.
 
 API hygiene, annotation hygiene, theme default policy, Compose `SKTextField` accessibility unification, IME focus bridge (from 1.3.2-alpha05), and accessibility / Getting Started documentation.
 
@@ -25,7 +25,7 @@ API hygiene, annotation hygiene, theme default policy, Compose `SKTextField` acc
 
 ### Demo
 
-[`samples/skone-demo`](../samples/skone-demo/) remains on **Maven Central `1.3.2-alpha05`** until `1.4.0-alpha01` is published. No `mavenLocal()` or `project(":skone-*")` dependencies.
+[`samples/skone-demo`](../samples/skone-demo/) consumes **Maven Central `1.4.0-alpha01`** (published). It does not use `mavenLocal()` or `project(":skone-*")` dependencies.
 
 ### Deferred (not in 1.4.0-alpha01)
 

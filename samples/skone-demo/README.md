@@ -6,9 +6,9 @@ It intentionally does **not** depend on SKOne source modules in this repository.
 
 ## Current version
 
-`1.3.2-alpha05` (published on Maven Central)
+`1.4.0-alpha01` (published on Maven Central)
 
-**Release note:** Compose `SKTextField` IME Next/Previous moves actual UI focus via `FocusRequester`. No public API change. See [Release Notes](../../docs/RELEASE_NOTES.md).
+**Release note:** API hygiene, annotation hygiene, theme default policy, Compose `SKTextField` accessibility unification, accessibility docs. See [Release Notes](../../docs/RELEASE_NOTES.md).
 
 ## Maven coordinates
 
@@ -22,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
-    implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha05")
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
+    implementation("com.thesubodhgupta.skone:skone-compose:1.4.0-alpha01")
 }
 ```
 

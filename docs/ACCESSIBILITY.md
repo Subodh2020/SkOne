@@ -1,6 +1,6 @@
 # Accessibility capability matrix
 
-Honest contract for SKOne **Compose** (`SKText`, `SKTextField`) and **XML** (`SKTextView`, `SKTextFieldView`) as of the current tree (baseline published `1.3.2-alpha05`, with completed Compose `SKTextField` a11y unification).
+Honest contract for SKOne **Compose** (`SKText`, `SKTextField`) and **XML** (`SKTextView`, `SKTextFieldView`) as of the current tree (baseline published `1.4.0-alpha01`, with completed Compose `SKTextField` a11y unification).
 
 **Do not treat a property on `SKAccessibilityConfig` as supported** unless this matrix (and the cited tests/source) say it is consumed by that widget.
 

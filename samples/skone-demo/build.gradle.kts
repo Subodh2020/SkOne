@@ -48,8 +48,8 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.3.2-alpha05"))
-    implementation("com.thesubodhgupta.skone:skone-compose:1.3.2-alpha05")
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
+    implementation("com.thesubodhgupta.skone:skone-compose:1.4.0-alpha01")
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
