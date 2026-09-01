@@ -1,5 +1,6 @@
 package com.thesubodhgupta.skonedemo
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,21 +8,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.skone.common.result.SKResult
 import io.skone.component.accessibility.SKAccessibilityConfig
 import io.skone.component.appearance.SKAppearanceConfig
+import io.skone.component.validation.SKValidationResult
 import io.skone.compose.theme.skTheme
 import io.skone.compose.theme.toColor
 import io.skone.compose.widget.SKText
 import io.skone.compose.widget.SKTextField
-import io.skone.component.validation.SKValidationResult
 import io.skone.forms.validation.SKEmailRule
 import io.skone.theme.tokens.SKColorRole
 import io.skone.theme.tokens.SKTypographyRole
@@ -33,6 +39,7 @@ private const val SKONE_VERSION = "1.4.0-alpha01"
 @Composable
 fun DemoScreen(modifier: Modifier = Modifier) {
     val theme = skTheme
+    val context = LocalContext.current
     val statusMessage = remember {
         when (val result = SKResult.success("SKOne APIs resolved from Maven Central")) {
             is SKResult.Success -> result.value
@@ -45,6 +52,7 @@ fun DemoScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .background(theme.tokens.colors.background.toColor())
             .safeDrawingPadding()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -74,7 +82,7 @@ fun DemoScreen(modifier: Modifier = Modifier) {
             ),
         )
         SKText(
-            text = "Rendered with SKTheme + SKTextField from com.thesubodhgupta.skone:skone-compose",
+            text = "Compose consumer: skone-bom + skone-compose (Maven Central)",
             appearance = SKAppearanceConfig.Text.copy(
                 typographyRole = SKTypographyRole.BodySmall,
                 contentColorRole = SKColorRole.OnSurfaceVariant,
@@ -118,5 +126,21 @@ fun DemoScreen(modifier: Modifier = Modifier) {
                 contentColorRole = SKColorRole.Secondary,
             ),
         )
+
+        SKText(
+            text = "XML consumer: skone-bom + skone-xml (Maven Central flagship Text/TextField)",
+            appearance = SKAppearanceConfig.Text.copy(
+                typographyRole = SKTypographyRole.BodySmall,
+                contentColorRole = SKColorRole.OnSurfaceVariant,
+            ),
+        )
+        Button(
+            onClick = {
+                context.startActivity(Intent(context, XmlDemoActivity::class.java))
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Open XML Demo")
+        }
     }
 }

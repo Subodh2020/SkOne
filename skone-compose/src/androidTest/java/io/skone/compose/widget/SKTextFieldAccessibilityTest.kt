@@ -9,6 +9,8 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -273,5 +275,61 @@ class SKTextFieldAccessibilityTest {
         composeRule.onNodeWithText("Required").assertIsDisplayed()
         composeRule.onNodeWithTag("name_required_submit")
             .assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Error))
+    }
+
+    @Test
+    fun decorativeLeadingIconDoesNotExposeRawKeyAsContentDescription() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                var value by remember { mutableStateOf("") }
+                SKTextField(
+                    value = value,
+                    onValueChange = { value = it },
+                    fieldId = "icon_silent",
+                    label = "Email",
+                    leadingIcon = io.skone.component.framework.icon.SKIconKey("skone.icon.mail"),
+                    accessibility = SKAccessibilityConfig(
+                        contentDescription = "Email address",
+                        testTag = "email_with_icon",
+                    ),
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("email_with_icon").assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("Email address").assertIsDisplayed()
+        // Near-miss: raw key must NOT become a TalkBack sibling (pre-fix regression).
+        composeRule
+            .onAllNodes(hasContentDescription("skone.icon.mail"), useUnmergedTree = true)
+            .assertCountEquals(0)
+    }
+
+    @Test
+    fun explicitIconContentDescriptionIsAnnouncedSeparately() {
+        composeRule.setContent {
+            SKTheme(mode = SKThemeMode.Light) {
+                var value by remember { mutableStateOf("") }
+                SKTextField(
+                    value = value,
+                    onValueChange = { value = it },
+                    fieldId = "icon_loud",
+                    label = "Search",
+                    leadingIcon = io.skone.component.framework.icon.SKIconKey(
+                        key = "skone.icon.search",
+                        contentDescription = "Search glyph",
+                    ),
+                    accessibility = SKAccessibilityConfig(
+                        contentDescription = "Search field",
+                        testTag = "search_with_icon",
+                    ),
+                )
+            }
+        }
+
+        composeRule.onNodeWithContentDescription("Search field").assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("Search glyph").assertIsDisplayed()
+        composeRule
+            .onAllNodes(hasContentDescription("skone.icon.search"), useUnmergedTree = true)
+            .assertCountEquals(0)
     }
 }

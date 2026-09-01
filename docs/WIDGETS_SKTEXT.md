@@ -90,6 +90,7 @@ textView.bind(SKComponentRuntime.create())
 ## Related
 
 - [Accessibility capability matrix](ACCESSIBILITY.md)
+- [Next phase design](architecture/NEXT_PHASE_DESIGN.md) (in-tree development)
 - [ADR 0009](adr/0009-sktext-reference-widget.md)
 - [Component Framework](COMPONENT_FRAMEWORK.md)
 - [Design System](DESIGN_SYSTEM.md)

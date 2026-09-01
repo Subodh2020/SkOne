@@ -17,6 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".XmlDemoActivity"
+            android:exported="false"
+            android:label="SKOne XML Demo"
+            android:theme="@style/Theme.SKOneDemo.Xml" />
     </application>
 
 </manifest>

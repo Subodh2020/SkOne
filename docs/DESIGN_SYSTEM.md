@@ -1,8 +1,8 @@
 # SKOne Design System (v1.1)
 
 Token-driven visual and interaction language for SKOne.
-Widgets (buttons, fields, …) are **not** part of this milestone — only the
-shared contracts and theme engine that every future widget will inherit.
+This document covers the theme token system and bridges. Production widgets
+(`SKText`, `SKTextField`, interactive/selection, feedback, overlay, navigation, Scaffold/ListItem, SearchBar/EmptyState/FAB, Tabs/Badge/Avatar, Menu/Dropdown/Tooltip/BottomAppBar, BottomSheet/SegmentedButton, …) live in `skone-compose` / `skone-xml` and consume these tokens.
 
 ## Goals
 
@@ -63,8 +63,8 @@ flowchart TB
 |--------|----------------|
 | `skone-theme` | Tokens, defaults, size/shape/state systems, theme engine |
 | `skone-core` | Component contracts, validation models, AI component config |
-| `skone-compose` | Compose theme bridge (`CompositionLocal`, converters) — **no widgets** |
-| `skone-xml` | XML/Context theme bridge — **no widgets** |
+| `skone-compose` | Compose theme bridge (`CompositionLocal`, converters) + production widgets |
+| `skone-xml` | XML/Context theme bridge + production widgets |
 
 ## Token taxonomy
 

@@ -6,7 +6,9 @@ package io.skone.component.framework.icon
  * Widgets pass keys such as `skone.icon.close`; providers map to Compose ImageVector / XML drawables.
  *
  * @property key Stable icon identifier.
- * @property contentDescription Optional a11y description override.
+ * @property contentDescription Optional screen-reader description. When null or blank, field
+ *   widgets treat the icon as decorative (no separate announcement of the raw [key]). Pass an
+ *   explicit non-blank value only when the icon should be announced on its own.
  */
 public data class SKIconKey(
     public val key: String,

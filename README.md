@@ -3,9 +3,9 @@
 **SKOne** is an open-source, enterprise-grade Android developer platform — modular, Kotlin-first, AI-ready, with Jetpack Compose and XML support.
 
 **Repository:** https://github.com/Subodh2020/SkOne  
-**Release version:** **1.4.0-alpha01** (alpha pre-release — **published** on Maven Central)
+**Release version:** **1.4.0-alpha02** (alpha pre-release — full widget kit)
 
-**1.4.0-alpha01** — API hygiene, annotation hygiene, theme default policy, Compose `SKTextField` accessibility unification, accessibility docs, Getting Started on `master`. See [Release Notes](docs/RELEASE_NOTES.md).
+**1.4.0-alpha02** — Additive widget surface (Button through BottomSheet/SegmentedButton), Application Examples quality bar, Consumer Hardening Maven proof. See [Release Notes](docs/RELEASE_NOTES.md).
 
 Stable public APIs remain usable without `@OptIn`. Direct use of `@SKInternal` implementation types may need `@OptIn(SKInternal::class)`.
 
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha02"))
     implementation("com.thesubodhgupta.skone:skone-compose")
 }
 ```
@@ -31,17 +31,17 @@ See [Getting Started](docs/GETTING_STARTED.md#choosing-skone-dependencies) for C
 | | |
 |---|---|
 | **Group** | `com.thesubodhgupta.skone` |
-| **Latest (Central)** | `1.4.0-alpha01` (published alpha) |
+| **Latest (Central)** | `1.4.0-alpha02` |
 | **Browse** | https://repo.maven.apache.org/maven2/com/thesubodhgupta/skone/ |
 | **Portal** | https://central.sonatype.com/ |
 
-**Published artifacts (`1.4.0-alpha01`):**
+**Published artifacts (`1.4.0-alpha02`):**
 
 | Artifact | Typical use |
 |----------|-------------|
 | `skone-bom` | Version alignment (declare first) |
-| `skone-compose` | **Recommended Compose entry** (`SKText`, `SKTextField`, `SKTheme`) |
-| `skone-xml` | **Recommended XML/View entry** (`SKTextView`, `SKTextFieldView`, `SKThemeHelper`) |
+| `skone-compose` | **Recommended Compose entry** (theme + full widget kit) |
+| `skone-xml` | **Recommended XML/View entry** (`SKThemeHelper` + `SK*View`) |
 | `skone-common` | Results, errors, logging (advanced / headless) |
 | `skone-plugin` | Plugin SPI (advanced / extension) |
 | `skone-theme` | Design tokens (advanced; usually transitive) |
@@ -55,7 +55,7 @@ See [Publishing Guide](docs/PUBLISHING.md) for maintainer workflows.
 
 ## Repository modules
 
-These modules are part of the SKOne monorepo. All library artifacts below are published to Maven Central at **`1.4.0-alpha01`**.
+These modules are part of the SKOne monorepo. All library artifacts below are published to Maven Central at **`1.4.0-alpha02`**.
 
 | Module | Description | Maven Central |
 |--------|-------------|---------------|
@@ -85,10 +85,16 @@ These modules are part of the SKOne monorepo. All library artifacts below are pu
 ## Documentation
 
 - [Getting Started](docs/GETTING_STARTED.md)
+- [Consumer Guide](docs/CONSUMER_GUIDE.md) — published vs in-tree vs next alpha
 - [API Reference](https://subodh2020.github.io/SkOne/api/) (hosted Dokka HTML)
 - [Accessibility](docs/ACCESSIBILITY.md) — capability matrix (Compose + XML)
+- [SKButton](docs/WIDGETS_SKBUTTON.md) — primary action widget (in-tree development)
 - [Publishing](docs/PUBLISHING.md)
 - [Playground](docs/PLAYGROUND.md)
+- [Screen composition](docs/architecture/SCREEN_COMPOSITION.md) — how to build real app surfaces
+- [XML application recipes](docs/architecture/XML_APPLICATION_RECIPES.md)
+- [Alpha release checklist](docs/release/ALPHA_RELEASE_CHECKLIST.md)
+- [Alpha02 release plan](docs/release/ALPHA02_RELEASE_PLAN.md)
 - [SDK API Guidelines](docs/SDK_API_GUIDELINES.md)
 - [Design System](docs/DESIGN_SYSTEM.md)
 - [Component Framework](docs/COMPONENT_FRAMEWORK.md)

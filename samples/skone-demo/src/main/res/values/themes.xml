@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- Compose MainActivity can use a platform Material theme. -->
     <style name="Theme.SKOneDemo" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- XML AppCompatActivity hosts MUST use Theme.AppCompat (or descendant). -->
+    <style name="Theme.SKOneDemo.Xml" parent="Theme.AppCompat.Light.NoActionBar" />
 </resources>

@@ -2,11 +2,22 @@
 
 Get from zero to a working SKOne Compose screen in a few minutes.
 
-This guide uses the published Maven Central release **`1.4.0-alpha01`**.
+This guide uses the published Maven Central release **`1.4.0-alpha02`**.
+
+For the full consumer story, start with **[CONSUMER_GUIDE.md](CONSUMER_GUIDE.md)**.
+
+## Published surface (Maven Central `1.4.0-alpha02`)
+
+| Layer | Available |
+|-------|-----------|
+| Compose | `SKTheme`, forms/runtime, full widget kit (Text/TextField, Button, Scaffold, SearchBar, EmptyState, BottomSheet, Navigation, Dialog, Snackbar, …) |
+| XML | `SKThemeHelper` + matching `SK*View` / hosts |
+
+See Application Examples and [XML_APPLICATION_RECIPES.md](architecture/XML_APPLICATION_RECIPES.md).
 
 ## 1. Requirements
 
-SKOne `1.4.0-alpha01` is built and tested with the toolchain below (from this repository’s Gradle configuration):
+SKOne `1.4.0-alpha02` is built and tested with the toolchain below (from this repository’s Gradle configuration):
 
 | Requirement | Version used by SKOne |
 |-------------|----------------------|
@@ -34,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha02"))
     implementation("com.thesubodhgupta.skone:skone-compose")
 }
 ```
@@ -58,7 +69,7 @@ Browse published artifacts: https://repo.maven.apache.org/maven2/com/thesubodhgu
 
 ```kotlin
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha02"))
     implementation("com.thesubodhgupta.skone:skone-compose")
 
     // Required by your app — not managed by the SKOne BOM
@@ -73,12 +84,14 @@ This is the minimal SKOne setup for `SKTheme`, `SKText`, `SKTextField`, and form
 
 ```kotlin
 dependencies {
-    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
+    implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha02"))
     implementation("com.thesubodhgupta.skone:skone-xml")
 }
 ```
 
 Use `skone-xml` for `SKTextView`, `SKTextFieldView`, and `SKThemeHelper`. Install the theme with `SKThemeHelper.install(...)` in your `Application` or `Activity`.
+
+If the host Activity extends `AppCompatActivity`, the activity theme must be `Theme.AppCompat` (or a descendant). A platform `android:Theme.Material.*` theme will crash at `setContentView`.
 
 Do **not** add `skone-compose` unless you also use Compose in the same app.
 

@@ -49,7 +49,8 @@ android {
 
 dependencies {
     implementation(platform("com.thesubodhgupta.skone:skone-bom:1.4.0-alpha01"))
-    implementation("com.thesubodhgupta.skone:skone-compose:1.4.0-alpha01")
+    implementation("com.thesubodhgupta.skone:skone-compose")
+    implementation("com.thesubodhgupta.skone:skone-xml")
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
@@ -58,6 +59,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
 
     testImplementation(libs.junit)
 

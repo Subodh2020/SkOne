@@ -167,6 +167,7 @@ public fun SKText(
         if (accessibility.heading) {
             heading()
         }
+        applyOptionalAccessibility(accessibility)
     }
 
     val clickModifier = if (onClick != null && component.config.enabled) {

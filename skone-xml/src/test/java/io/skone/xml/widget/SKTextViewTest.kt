@@ -2,7 +2,9 @@
 
 package io.skone.xml.widget
 
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ApplicationProvider
+import io.skone.component.accessibility.SKAccessibilityConfig
 import io.skone.component.framework.SKComponentRuntime
 import io.skone.common.log.SKNoOpLogger
 import io.skone.theme.SKThemes
@@ -83,5 +85,25 @@ class SKTextViewTest {
             ),
         )
         assertEquals("Primary accent", view.text.toString())
+    }
+
+    @Test
+    fun accessibility_appliesTestTagHeadingAndStateDescription() {
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val view = SKTextView(context)
+        view.setSkText("Title")
+        view.setAccessibility(
+            SKAccessibilityConfig(
+                contentDescription = "Section title",
+                testTag = "sktext_xml_title",
+                stateDescription = "Expanded",
+                heading = true,
+            ),
+        )
+
+        assertEquals("sktext_xml_title", view.tag)
+        assertEquals("Section title", view.contentDescription?.toString())
+        assertEquals("Expanded", ViewCompat.getStateDescription(view)?.toString())
+        assertTrue(ViewCompat.isAccessibilityHeading(view))
     }
 }

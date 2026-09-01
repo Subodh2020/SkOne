@@ -80,7 +80,10 @@ public class SKTextFieldView
         private var suppressWatcher: Boolean = false
 
         private val labelView = AppCompatTextView(context)
+        private val fieldRow = LinearLayout(context).apply { orientation = HORIZONTAL }
+        private val leadingIconView = AppCompatTextView(context)
         private val editText: AppCompatEditText = AppCompatEditText(context)
+        private val trailingIconView = AppCompatTextView(context)
         private val supportingView = AppCompatTextView(context)
 
         private var cachedComponent: SKTextFieldComponent? = null
@@ -126,8 +129,16 @@ public class SKTextFieldView
             orientation = VERTICAL
             attrs?.let { applyAttributes(it) }
             addView(labelView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
-            addView(editText, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            val editParams = LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f)
+            fieldRow.addView(leadingIconView, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
+            fieldRow.addView(editText, editParams)
+            fieldRow.addView(trailingIconView, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
+            addView(fieldRow, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
             addView(supportingView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            leadingIconView.visibility = View.GONE
+            trailingIconView.visibility = View.GONE
+            leadingIconView.importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
+            trailingIconView.importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
             editText.addTextChangedListener(
                 object : TextWatcher {
                     override fun beforeTextChanged(
@@ -234,8 +245,11 @@ public class SKTextFieldView
                         6 -> SKKeyboardType.Uri
                         else -> SKKeyboardType.Text
                     }
-                a.getString(R.styleable.SKTextFieldView_skContentDescription)?.let {
-                    accessibilityConfig = SKAccessibilityConfig(contentDescription = it)
+                a.getString(R.styleable.SKTextFieldView_skContentDescription)?.let { cd ->
+                    accessibilityConfig = accessibilityConfig.copy(contentDescription = cd)
+                }
+                a.getString(R.styleable.SKTextFieldView_skTestTag)?.let { tagValue ->
+                    accessibilityConfig = accessibilityConfig.copy(testTag = tagValue)
                 }
             } finally {
                 a.recycle()
@@ -346,11 +360,20 @@ public class SKTextFieldView
         public fun setLeadingIcon(value: SKIconKey?) {
             leadingIcon = value
             fieldComponent.setLeadingIcon(value)
+            render()
         }
 
         public fun setTrailingIcon(value: SKIconKey?) {
             trailingIcon = value
             fieldComponent.setTrailingIcon(value)
+            render()
+        }
+
+        /** Replaces accessibility config and re-renders. */
+        public fun setAccessibility(value: SKAccessibilityConfig) {
+            accessibilityConfig = value
+            syncComponent()
+            render()
         }
 
         public fun setImeAction(value: SKImeAction) {
@@ -472,14 +495,68 @@ public class SKTextFieldView
                 (supportingView.layoutParams as LayoutParams).topMargin = spacingPx
             }
 
-            val description =
-                accessibilityConfig.contentDescription
-                    ?: labelText
-                    ?: hintText
-                    ?: "Text field"
-            contentDescription = description
-            editText.contentDescription = description
+            renderIcons(theme, spacingPx)
+
+            val descriptionFallback = labelText ?: hintText ?: "Text field"
+            val requiredState = if (required) "Required" else null
+            val combinedState =
+                listOfNotNull(accessibilityConfig.stateDescription, requiredState)
+                    .takeIf { it.isNotEmpty() }
+                    ?.joinToString(", ")
+            val a11yForPrimary =
+                accessibilityConfig.copy(stateDescription = combinedState)
+            val errorText =
+                if (fieldComponent.visualState == SKFieldVisualState.Error) {
+                    supportText ?: "Invalid"
+                } else {
+                    null
+                }
+
+            // Primary editable owns testTag / Error / stateDescription / heading (Compose parity).
+            editText.applySKAccessibilityConfig(
+                config = a11yForPrimary,
+                contentDescriptionFallback = descriptionFallback,
+                errorText = errorText,
+            )
+            // Root keeps a contentDescription for existing hosts/tests; no duplicate testTag/Error.
+            contentDescription =
+                accessibilityConfig.contentDescription ?: descriptionFallback
             importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+        }
+
+        private fun renderIcons(
+            theme: io.skone.theme.SKTheme,
+            spacingPx: Int,
+        ) {
+            fun AppCompatTextView.bindIcon(key: SKIconKey?) {
+                if (key == null) {
+                    visibility = View.GONE
+                    text = null
+                    contentDescription = null
+                    importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
+                    return
+                }
+                visibility = View.VISIBLE
+                val ref = runtime?.icons?.resolve(key)
+                text = ref?.vectorName?.take(1) ?: "•"
+                val scale = theme.tokens.typography.scale(SKTypographyRole.LabelSmall)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, scale.size.value)
+                setTextColor(theme.tokens.colors.color(SKColorRole.OnSurfaceVariant).toArgb())
+                val explicitCd = key.contentDescription?.takeIf { it.isNotBlank() }
+                if (explicitCd != null) {
+                    contentDescription = explicitCd
+                    importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+                } else {
+                    contentDescription = null
+                    importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
+                }
+                val lp = layoutParams as LinearLayout.LayoutParams
+                lp.marginEnd = if (this === leadingIconView) spacingPx else 0
+                lp.marginStart = if (this === trailingIconView) spacingPx else 0
+                layoutParams = lp
+            }
+            leadingIconView.bindIcon(leadingIcon)
+            trailingIconView.bindIcon(trailingIcon)
         }
 
         private fun applyChrome() {

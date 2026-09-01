@@ -1,8 +1,10 @@
 # SKOne Developer Playground
 
-Official showcase for every SKOne component (Compose + XML).
+Official showcase for SKOne components (Compose + XML) plus **Application Examples**.
 
-**Version:** 1.3.1 — developer experience only (no new production widgets).
+**Version:** `1.4.0-alpha01` — consumer-readiness milestone.
+
+Published Maven Central still ships the flagship Text/TextField surface; Playground uses **in-tree** modules for the full widget kit.
 
 ## Run
 
@@ -14,27 +16,29 @@ Official showcase for every SKOne component (Compose + XML).
 
 | Feature | Description |
 |---------|-------------|
-| Component catalog | Indexed entries for widgets, frameworks, samples, docs |
-| Widget gallery | Visual grid of live SKOne widgets |
-| Live property editor | Tweak props and preview instantly |
-| Codegen | Generated Compose and XML snippets |
-| Theme switcher | Light / Dark / System via `SKThemeMode` |
-| Documentation | In-app articles + static `docs-site/` |
-| Sample browser | Curated integration recipes |
-| Search | Filters catalog by name, tags, description |
-| Navigation | Compose Navigation destinations |
+| **Application Examples** | List + Search + Filter, Form + Validation, App Shell + Navigation |
+| Component catalog | Widgets, frameworks, samples, docs |
+| Widget gallery | Live SKOne widgets |
+| Sample browser | Application Examples first, then smaller recipes (incl. XML scaffold recipe) |
+| Theme switcher | Light / Dark / System |
+| Documentation | In-app + `docs-site/` + [CONSUMER_GUIDE.md](CONSUMER_GUIDE.md) |
 
-## Extending for new widgets
+## Guides
 
-1. Add a `CatalogEntry` in `PlaygroundCatalog`.
-2. Add gallery preview + property model + Compose/XML generators.
-3. Link related docs / samples.
+- [Consumer Guide](CONSUMER_GUIDE.md) — published vs in-tree
+- [Screen composition](architecture/SCREEN_COMPOSITION.md)
+- [XML application recipes](architecture/XML_APPLICATION_RECIPES.md)
+- [Alpha release checklist](release/ALPHA_RELEASE_CHECKLIST.md)
 
-See [ADR 0012](adr/0012-developer-experience-playground.md).
+## Extending
+
+1. Prefer composing Application Examples over new one-off widgets.
+2. For a new widget: catalog entry, gallery, editors, docs — and mark **in-tree** until published.
+3. See [ADR 0012](adr/0012-developer-experience-playground.md).
 
 ## Docs site
 
-Open [`docs-site/index.html`](../docs-site/index.html) in a browser, or:
+Open [`docs-site/index.html`](../docs-site/index.html) or:
 
 ```bash
 cd docs-site && python3 -m http.server 8080

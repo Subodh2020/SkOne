@@ -1,5 +1,32 @@
 # SKOne Release Notes
 
+## 1.4.0-alpha02
+
+**Published alpha** on Maven Central (`1.4.0-alpha02`) — additive full widget kit + Application Examples quality bar.
+
+### Highlights
+
+1. **Full widget surface** — Compose + XML widgets beyond Text/TextField (Button, IconButton, Checkbox, Switch, Radio, Chip, Slider, Progress, Divider, Card, Snackbar, Dialog/AlertDialog, TopAppBar, NavigationBar, Scaffold, ListItem, SectionHeader, SearchBar, EmptyState, Fab, Tabs, Badge, Avatar, Menu/Dropdown, Tooltip, BottomAppBar, BottomSheet, SegmentedButton).
+2. **Application Examples** — List+Search+Filter, Form+Validation, App Shell+Navigation as the consumer quality bar (Playground + XML recipes).
+3. **Consumer Hardening** — Standalone Maven-only app `consumers/skone-consumer-hardening/` targeting `skone-bom:1.4.0-alpha02`.
+4. **Compatibility** — Flagship alpha01 APIs remain source-compatible; alpha02 is additive. No intentional breaking changes.
+5. **XML host note** — `AppCompatActivity` requires `Theme.AppCompat` (documented after demo crash fix).
+
+### Consumer guidance
+
+- Depend on `skone-bom:1.4.0-alpha02` + `skone-compose` and/or `skone-xml`.
+- Host owns screen state; no new navigation/overlay/form manager frameworks.
+- Stable public APIs remain usable **without** `@OptIn`.
+
+### Demo / hardening
+
+- [`samples/skone-demo`](../samples/skone-demo/) — Maven Central consumer (refresh to alpha02 after Central verify).
+- [`consumers/skone-consumer-hardening/`](../consumers/skone-consumer-hardening/) — external A/B/C Compose+XML proof.
+
+### Deferred (P2)
+
+- LazyList wrapper, snackbar queue/auto-dismiss, deeper TalkBack automation, widget-doc status banners on every page.
+
 ## 1.4.0-alpha01
 
 **Published alpha** on Maven Central (`1.4.0-alpha01`). Deployment ID: `4bf8a86e-494e-4f8d-af2a-624e0f77da29`.

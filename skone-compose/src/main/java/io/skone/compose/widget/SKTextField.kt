@@ -39,7 +39,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.heading
@@ -336,7 +336,16 @@ public fun SKTextField(
                         if (combinedState != null) {
                             stateDescription = combinedState
                         }
+                        // Role / liveRegion / traversalIndex (mergeDescendants intentionally not applied —
+                        // primary-node ownership must not merge decoration into the editable).
                         accessibility.role?.toComposeRole()?.let { role = it }
+                        applyOptionalAccessibility(
+                            accessibility.copy(
+                                // stateDescription already applied with Required merge above.
+                                stateDescription = null,
+                                role = null,
+                            ),
+                        )
                         if (accessibility.heading) {
                             heading()
                         }
@@ -480,10 +489,20 @@ private fun IconSlot(
     runtime: SKComponentRuntime?,
 ) {
     val ref = runtime?.icons?.resolve(key)
-    Box(
-        modifier = Modifier
+    val explicitCd = key.contentDescription?.takeIf { it.isNotBlank() }
+    // Decorative by default: do not announce raw key strings beside the primary field node.
+    // Only create a TalkBack-visible description when the app sets an explicit CD.
+    val iconModifier = if (explicitCd != null) {
+        Modifier
             .size(size)
-            .semantics { contentDescription = key.contentDescription ?: key.key },
+            .semantics { contentDescription = explicitCd }
+    } else {
+        Modifier
+            .size(size)
+            .clearAndSetSemantics { }
+    }
+    Box(
+        modifier = iconModifier,
         contentAlignment = Alignment.Center,
     ) {
         BasicText(
@@ -514,18 +533,6 @@ private fun SKKeyboardType.toCompose(): KeyboardType = when (this) {
     SKKeyboardType.Email -> KeyboardType.Email
     SKKeyboardType.Password -> KeyboardType.Password
     SKKeyboardType.Uri -> KeyboardType.Uri
-}
-
-/** Maps [SKAccessibilityConfig.role] strings onto Compose [Role] when they match a known role. */
-private fun String.toComposeRole(): Role? = when (lowercase()) {
-    "button" -> Role.Button
-    "checkbox" -> Role.Checkbox
-    "switch" -> Role.Switch
-    "radiobutton", "radio" -> Role.RadioButton
-    "tab" -> Role.Tab
-    "image" -> Role.Image
-    "dropdownlist", "dropdown" -> Role.DropdownList
-    else -> null
 }
 
 private const val DisabledAlpha = 0.38f

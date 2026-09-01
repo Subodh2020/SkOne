@@ -39,9 +39,15 @@ fun HomeScreen(
     ) {
         PlaygroundSectionTitle("SKOne Playground")
         PlaygroundBody(
-            "Official developer showcase for every SKOne component. " +
-                "Browse the catalog, tweak live properties, copy Compose/XML, and switch themes.",
+            "Official developer showcase. Start with Application Examples to see real screens, " +
+                "then use the catalog for individual widgets.",
         )
+
+        PlaygroundSectionTitle("Application Examples")
+        PlaygroundBody("List + Filter · Form + Validation · App Shell — composed from existing primitives.")
+        Button(onClick = onOpenSamples, modifier = Modifier.fillMaxWidth()) {
+            Text("Open Application Examples")
+        }
 
         PlaygroundSectionTitle("Theme")
         ThemeSwitcher(mode = themeMode, onModeChange = onThemeModeChange)
@@ -55,9 +61,6 @@ fun HomeScreen(
         }
         OutlinedButton(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth()) {
             Text("Search")
-        }
-        OutlinedButton(onClick = onOpenSamples, modifier = Modifier.fillMaxWidth()) {
-            Text("Sample browser")
         }
         OutlinedButton(onClick = onOpenDocs, modifier = Modifier.fillMaxWidth()) {
             Text("Documentation")

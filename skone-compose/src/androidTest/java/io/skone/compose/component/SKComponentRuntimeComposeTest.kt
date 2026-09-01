@@ -2,6 +2,7 @@
 
 package io.skone.compose.component
 
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +27,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
+import java.util.concurrent.CopyOnWriteArrayList
 /**
  * Compose contracts for [rememberSKComponentRuntime] / [ProvideSKComponentRuntime].
  */
@@ -103,14 +104,16 @@ class SKComponentRuntimeComposeTest {
 
     @Test
     fun rememberSKComponentRuntimeReturnsStableInstanceAcrossRecomposition() {
-        val seen = mutableListOf<SKComponentRuntime>()
+        val seen = CopyOnWriteArrayList<SKComponentRuntime>()
         var tick by mutableIntStateOf(0)
         composeRule.setContent {
             SKTheme(mode = SKThemeMode.Light) {
                 val runtime = rememberSKComponentRuntime()
-                seen += runtime
-                // Read tick so recomposition runs when it changes.
-                SKText(text = "tick=$tick")
+                val currentTick = tick
+                SideEffect {
+                    seen += runtime
+                }
+                SKText(text = "tick=$currentTick")
             }
         }
         composeRule.onNodeWithText("tick=0").assertIsDisplayed()

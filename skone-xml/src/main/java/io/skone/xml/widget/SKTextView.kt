@@ -114,9 +114,12 @@ public class SKTextView
                     val role = contentColorRoleFromAttr(a.getInt(R.styleable.SKTextView_skContentColorRole, 9))
                     appearance = appearance.copy(contentColorRole = role)
                 }
-                a.getString(R.styleable.SKTextView_skContentDescription)?.let {
-                    accessibilityConfig = SKAccessibilityConfig(contentDescription = it)
-                    contentDescription = it
+                a.getString(R.styleable.SKTextView_skContentDescription)?.let { cd ->
+                    accessibilityConfig = accessibilityConfig.copy(contentDescription = cd)
+                    contentDescription = cd
+                }
+                a.getString(R.styleable.SKTextView_skTestTag)?.let { tagValue ->
+                    accessibilityConfig = accessibilityConfig.copy(testTag = tagValue)
                 }
             } finally {
                 a.recycle()
@@ -168,6 +171,13 @@ public class SKTextView
             render()
         }
 
+        /** Replaces accessibility config and re-renders. */
+        public fun setAccessibility(value: SKAccessibilityConfig) {
+            accessibilityConfig = value
+            syncComponent()
+            render()
+        }
+
         private fun syncComponent() {
             textComponent.setAnnotated(annotated)
             textComponent.setOverflow(overflow)
@@ -191,9 +201,10 @@ public class SKTextView
             if (!softWrapEnabled) {
                 setSingleLine(true)
             }
-            if (contentDescription.isNullOrBlank()) {
-                contentDescription = accessibilityConfig.contentDescription ?: annotated.text
-            }
+            applySKAccessibilityConfig(
+                config = accessibilityConfig,
+                contentDescriptionFallback = annotated.text,
+            )
         }
 
         private fun applyTheme(theme: SKTheme) {

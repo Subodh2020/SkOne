@@ -46,6 +46,7 @@
             <enum name="onSurfaceVariant" value="10" />
         </attr>
         <attr name="skContentDescription" format="string|reference" />
+        <attr name="skTestTag" format="string|reference" />
         <attr name="skComponentId" format="string" />
     </declare-styleable>
 
@@ -60,6 +61,7 @@
         <attr name="skSingleLine" format="boolean" />
         <attr name="skMaxLines" />
         <attr name="skContentDescription" />
+        <attr name="skTestTag" />
         <attr name="skImeAction" format="enum">
             <enum name="defaultAction" value="0" />
             <enum name="done" value="1" />
@@ -79,5 +81,258 @@
             <enum name="password" value="5" />
             <enum name="uri" value="6" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="SKButtonView">
+        <attr name="skComponentId" />
+        <attr name="skText" />
+        <attr name="skEnabled" format="boolean" />
+        <attr name="skLoading" format="boolean" />
+        <attr name="skButtonVariant" format="enum">
+            <enum name="filled" value="0" />
+            <enum name="tonal" value="1" />
+            <enum name="outlined" value="2" />
+            <enum name="text" value="3" />
+        </attr>
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKCheckboxView">
+        <attr name="skComponentId" />
+        <attr name="skLabel" />
+        <attr name="skChecked" format="boolean" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKSwitchView">
+        <attr name="skComponentId" />
+        <attr name="skLabel" />
+        <attr name="skChecked" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKIconButtonView">
+        <attr name="skComponentId" />
+        <attr name="skIconKey" format="string|reference" />
+        <attr name="skIconContentDescription" format="string|reference" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKRadioGroupView">
+        <attr name="skEnabled" />
+        <attr name="skSelectedValue" format="string|reference" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKRadioButtonView">
+        <attr name="skComponentId" />
+        <attr name="skValue" />
+        <attr name="skLabel" />
+        <attr name="skSelected" format="boolean" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKChipView">
+        <attr name="skComponentId" />
+        <attr name="skLabel" />
+        <attr name="skSelected" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKSliderView">
+        <attr name="skComponentId" />
+        <attr name="skValueFloat" format="float" />
+        <attr name="skValueMin" format="float" />
+        <attr name="skValueMax" format="float" />
+        <attr name="skSteps" format="integer" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKProgressIndicatorView">
+        <attr name="skComponentId" />
+        <attr name="skProgress" format="float" />
+        <attr name="skIndeterminate" format="boolean" />
+        <attr name="skProgressStyle" format="enum">
+            <enum name="linear" value="0" />
+            <enum name="circular" value="1" />
+        </attr>
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKDividerView">
+        <attr name="skComponentId" />
+        <attr name="skOrientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKCardView">
+        <attr name="skComponentId" />
+        <attr name="skClickable" format="boolean" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKSnackbarView">
+        <attr name="skComponentId" />
+        <attr name="skMessage" format="string|reference" />
+        <attr name="skActionLabel" format="string|reference" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKTopAppBarView">
+        <attr name="skComponentId" />
+        <attr name="skTitle" format="string|reference" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKNavigationBarView">
+        <attr name="skComponentId" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKListItemView">
+        <attr name="skComponentId" />
+        <attr name="skHeadline" format="string|reference" />
+        <attr name="skSupportingText" />
+        <attr name="skTrailingText" format="string|reference" />
+        <attr name="skSelected" />
+        <attr name="skEnabled" />
+        <attr name="skClickable" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKSectionHeaderView">
+        <attr name="skComponentId" />
+        <attr name="skTitle" />
+        <attr name="skSupportingText" />
+        <attr name="skActionLabel" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKScaffoldView">
+        <attr name="skComponentId" />
+        <attr name="skSafeDrawing" format="boolean" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKSearchBarView">
+        <attr name="skComponentId" />
+        <attr name="skQuery" format="string|reference" />
+        <attr name="skPlaceholder" format="string|reference" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKEmptyStateView">
+        <attr name="skComponentId" />
+        <attr name="skTitle" />
+        <attr name="skDescription" format="string|reference" />
+        <attr name="skIconKey" />
+        <attr name="skPrimaryAction" format="string|reference" />
+        <attr name="skSecondaryAction" format="string|reference" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKFabView">
+        <attr name="skComponentId" />
+        <attr name="skIconKey" />
+        <attr name="skIconContentDescription" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKTabRowView">
+        <attr name="skComponentId" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKBadgeView">
+        <attr name="skComponentId" />
+        <attr name="skBadgeText" format="string|reference" />
+        <attr name="skVisible" format="boolean" />
+        <attr name="skDot" format="boolean" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKAvatarView">
+        <attr name="skComponentId" />
+        <attr name="skInitials" format="string|reference" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKMenuView">
+        <attr name="skComponentId" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKDropdownMenuView">
+        <attr name="skComponentId" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKTooltipView">
+        <attr name="skComponentId" />
+        <attr name="skMessage" />
+        <attr name="skVisible" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKBottomAppBarView">
+        <attr name="skComponentId" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKBottomSheetView">
+        <attr name="skComponentId" />
+        <attr name="skTitle" />
+        <attr name="skPrimaryAction" />
+        <attr name="skSecondaryAction" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
+    </declare-styleable>
+
+    <declare-styleable name="SKSegmentedButtonView">
+        <attr name="skComponentId" />
+        <attr name="skEnabled" />
+        <attr name="skContentDescription" />
+        <attr name="skTestTag" />
     </declare-styleable>
 </resources>
