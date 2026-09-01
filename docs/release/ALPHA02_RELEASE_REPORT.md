@@ -1,92 +1,82 @@
-# Alpha02 Release Report (in progress)
+# Alpha02 Release Report — Commit/Push Complete
 
 **Date:** 2026-09-01  
-**Target:** `1.4.0-alpha02`  
-**Plan:** [`docs/release/ALPHA02_RELEASE_PLAN.md`](ALPHA02_RELEASE_PLAN.md)
+**Version:** `1.4.0-alpha02`  
+**Branch:** `master` → `origin/master`
 
 ---
 
-## Status
+## Commit / push
 
-| Stage | Result |
+| Item | Value |
+|------|--------|
+| Commit | `1f8cd25a8c0616addc2829db73ef4388df18e7ec` |
+| Message | `Release SKOne 1.4.0-alpha02` |
+| Pushed branch | `origin/master` |
+| Remote verify | `HEAD` == `origin/master` == `1f8cd25` |
+| Tag / GitHub Release | **Not created** |
+| `publish.yml` | **Not dispatched** |
+
+---
+
+## Files committed
+
+**189 files** · **+24638 / −230**
+
+Top-level breakdown:
+
+| Area | Files |
+|------|------:|
+| docs | 47 |
+| skone-compose | 36 |
+| skone-xml | 35 |
+| skone-ui | 26 |
+| consumers | 25 |
+| samples | 14 |
+| skone-core | 2 |
+| gradle.properties / libs.versions.toml / README / docs-site | 4 |
+
+Included: widgets, tests, playground Application Examples, consumer hardening app, release docs, `VERSION_NAME` / `skone.version` / `libs.versions.toml`.
+
+Excluded: `local.properties`, `.gradle/`, build outputs, IDE files, secrets.
+
+---
+
+## Validation results (pre-commit)
+
+| Check | Result |
 |-------|--------|
-| 1. Repo preflight | PASS (working tree contains full alpha02 surface; `git diff --check` clean) |
-| 2. Confirm prior `VERSION_NAME` | Was `1.4.0-alpha01` |
-| 3. Bump to `1.4.0-alpha02` | **DONE** (`gradle.properties`, `skone.version`, `libs.versions.toml`) |
-| 4. BOM / module version consistency | **PASS** — all 9 publications report `Version : 1.4.0-alpha02` |
-| 5. Validation matrix | **PASS** (see below) |
-| 6. Consumer docs claim alpha02 | **DONE** (README, CONSUMER_GUIDE, GETTING_STARTED, PUBLISHING, RELEASE_NOTES, docs-site) |
-| 7. Publish to Maven Central | **BLOCKED** — see gate below |
-| 8. Consumer Central resolve / emulator | **PENDING** publish |
-| 9. Commit / tag / push | **NOT DONE** (explicitly not requested) |
+| `clean test` | PASS |
+| `dokkaHtmlAll` | PASS |
+| `verifyPublishing` | PASS |
+| `:skone-compose:connectedDebugAndroidTest` | **94/94 PASS** (Pixel_9_Pro API 16) |
+| `:samples:skone-demo:assembleDebug` | PASS |
+| `:samples:skone-playground:assembleDebug` | PASS |
+| `git diff --check` | PASS |
 
 ---
 
-## Validation matrix (exact)
+## Version / BOM
 
-| Command | Result |
-|---------|--------|
-| `clean test` | **PASS** |
-| `dokkaHtmlAll` | **PASS** |
-| `verifyPublishing` | **PASS** (signing SKIP locally — expected without `SIGNING_KEY`) |
-| `:skone-compose:connectedDebugAndroidTest` | **94/94 PASS** — Pixel_9_Pro(AVD) API 16 |
-| `:samples:skone-demo:assembleDebug` | **PASS** (still consumes Central **alpha01** until post-publish refresh) |
-| `:samples:skone-playground:assembleDebug` | **PASS** |
-| `git diff --check` | **PASS** (exit 0) |
+| Item | Value |
+|------|--------|
+| `VERSION_NAME` | `1.4.0-alpha02` |
+| `skone.version` | `1.4.0-alpha02` |
+| `libs.versions.toml` `skone` | `1.4.0-alpha02` |
+| Publications (9/9) | `skone-bom`, `skone-common`, `skone-plugin`, `skone-theme`, `skone-core`, `skone-ui`, `skone-forms`, `skone-compose`, `skone-xml` → **1.4.0-alpha02** |
 
 ---
 
-## Publish gate (hard blocker)
+## Remaining publishing status
 
-`publish.yml` checks out **GitHub `origin/master`**. That remote tip is still the committed alpha01 tree (`3110e68`). The alpha02 widget kit + version bump exist **only in the local working tree** (large uncommitted / untracked set).
+**Maven Central publish is a separate gate — not executed.**
 
-Without **commit + push**, running `publish.yml` would publish the **wrong** (pre-alpha02) sources.
+Next (only when you explicitly authorize):
 
-Additionally in this environment:
+1. Dispatch `.github/workflows/publish.yml` with `publish_central=true` and `create_github_release=false`
+2. Wait for Central verify of `skone-bom:1.4.0-alpha02`
+3. Build `consumers/skone-consumer-hardening/` from Maven Central only
+4. Emulator Compose + XML A/B/C
+5. Refresh `samples/skone-demo` to alpha02
 
-- `gh` CLI is not installed
-- No `SIGNING_*` / `CENTRAL_PORTAL_*` secrets in the shell environment
-
-So Central publish cannot be completed from here until you authorize:
-
-1. **Commit** the release tree (alpha02 sources + version bump + docs)  
-2. **Push** to `origin`  
-3. **Dispatch** `.github/workflows/publish.yml` with:
-   - `publish_central=true`
-   - `create_github_release=false` (unless you also want a tag/release — you said no tag unless requested)
-   - `publishing_type=USER_MANAGED` (default)
-
-No `mavenLocal()` / `project()` workarounds will be used.
-
----
-
-## What was intentionally not done yet
-
-- Refresh `samples/skone-demo` BOM to alpha02 — plan says **after** Central verify  
-- Build/run `consumers/skone-consumer-hardening/` against Central — requires published alpha02  
-- Commit / tag / push  
-
----
-
-## Recommended immediate human action
-
-Reply with explicit authorization, for example:
-
-> Commit and push the alpha02 release tree to origin/master, then run publish.yml with publish_central=true and create_github_release=false.
-
-After that succeeds, this agent can:
-
-1. Poll Maven Central until `skone-bom:1.4.0-alpha02` returns 200  
-2. Build `consumers/skone-consumer-hardening/` from Central only  
-3. Run Compose + XML A/B/C on the emulator  
-4. Refresh demo to alpha02  
-5. Finalize this report with deployment ID + consumer evidence  
-
----
-
-## Release safety so far
-
-- No new widgets added in this release step  
-- No API redesign  
-- No automatic commit/tag/push  
-- No mavenLocal / project consumer workarounds  
+Until then, Central latest remains **`1.4.0-alpha01`**; alpha02 exists on `origin/master` but is **not yet published**.
